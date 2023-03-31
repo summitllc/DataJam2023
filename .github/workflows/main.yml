@@ -1,23 +1,30 @@
+name: CI/CD counter app
+
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
-  
+    branches: [ main ]
+
 jobs:
-  run_pull:
-    name: run pull
+  Deploy:
     runs-on: ubuntu-latest
     
     steps:
-    - name: install ssh keys
-      # check this thread to understand why its needed:
-      # https://stackoverflow.com/a/70447517
-      run: |
-        install -m 600 -D /dev/null ~/.ssh/id_rsa
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-    - name: connect and pull
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
-    - name: cleanup
-      run: rm -rf ~/.ssh
+      - name: Deploy in EC2
+        env:
+            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY  }}
+            HOSTNAME : ${{ secrets.SSH_HOST  }}
+            USER_NAME : ${{ secrets.SSH_USER  }}
+            
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+          
+            #Now we have got the access of EC2 and we will start the deploy .
+            cd /home/ubuntu/DataJam2023/data-jam-2023 &&
+            git checkout main &&
+            git fetch --all &&
+            git reset --hard origin/main &&
+            git pull origin main &&
+            pm2 stop data-jam &&
+            npm run build
+          '
