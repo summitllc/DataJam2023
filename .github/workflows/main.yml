@@ -25,6 +25,5 @@ jobs:
             git fetch --all &&
             git reset --hard origin/main &&
             git pull origin main &&
-            pm2 stop data-jam &&
-            npm run build
+            pm2 status
           '
