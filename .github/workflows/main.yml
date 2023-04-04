@@ -1,4 +1,4 @@
-name: CI/CD counter app
+name: CI/CD
 
 on:
   push:
@@ -27,6 +27,7 @@ jobs:
             git pull origin main &&
             pm2 stop data-jam &&
             pm2 delete data-jam &&
+            npm install &&
             npm run build &&
             pm2 start npm --name "data-jam" 
           '
