@@ -22,12 +22,12 @@ jobs:
       - name: Fetch lastest changes
             
         run: |
-            pwd &&
+            'pwd &&
             cd /home/ubuntu/DataJam2023/data-jam-2023 &&
             git checkout main &&
             git fetch --all &&
             git reset --hard origin/main &&
-            git pull origin main
+            git pull origin main'
             
       - name: Write to file
         env:
