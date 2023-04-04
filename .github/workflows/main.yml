@@ -22,13 +22,14 @@ jobs:
       - name: Fetch lastest changes
             
         run: |
+            pwd &&
             cd /home/ubuntu/DataJam2023/data-jam-2023 &&
             git checkout main &&
             git fetch --all &&
             git reset --hard origin/main &&
             git pull origin main
             
-      - name: Connect to SSH
+      - name: Write to file
         env:
             DB_SECRET: ${{secrets.DB_SECRET }}
         uses: "DamianReeves/write-file-action@master"
