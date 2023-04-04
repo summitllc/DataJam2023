@@ -30,7 +30,7 @@ jobs:
             
       - name: Connect to SSH
         env:
-            DB_SECRET: ${{secrects.DB_SECRET }}
+            DB_SECRET: ${{secrets.DB_SECRET }}
         uses: "DamianReeves/write-file-action@master"
         with: 
           path: /home/ubuntu/DataJam2023/data-jam-2023/.env
