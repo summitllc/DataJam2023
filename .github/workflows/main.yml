@@ -9,44 +9,27 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Connect to SSH
+      - name: Deploy in EC2
         env:
             PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY  }}
             HOSTNAME : ${{ secrets.SSH_HOST  }}
             USER_NAME : ${{ secrets.SSH_USER  }}
+            DB_SECRET: ${{secrets.DB_SECRET }}
             
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
           
-      - name: Fetch lastest changes
-            
-        run: |
-            'pwd &&
+            #Now we have got the access of EC2 and we will start the deploy .
             cd /home/ubuntu/DataJam2023/data-jam-2023 &&
             git checkout main &&
             git fetch --all &&
             git reset --hard origin/main &&
-            git pull origin main'
-            
-      - name: Write to file
-        env:
-            DB_SECRET: ${{secrets.DB_SECRET }}
-        uses: "DamianReeves/write-file-action@master"
-        with: 
-          path: /home/ubuntu/DataJam2023/data-jam-2023/.env
-          write-mode: overwrite
-          contents: |
-            ${DB_SECRET}
-      
-      - name: PM2 
-            
-        run: |
+            git pull origin main &&
+            echo "$DB_SECRET" >> .env &&
             pm2 stop data-jam &&
             pm2 delete data-jam &&
             npm install &&
             npm run build &&
             pm2 start "npm run start" --name data-jam
-            
-          
-    
+          '
