@@ -29,5 +29,5 @@ jobs:
             pm2 delete data-jam &&
             npm install &&
             npm run build &&
-            pm2 start npm --name "data-jam" 
+            pm2 start "npm run start" --name data-jam
           '
