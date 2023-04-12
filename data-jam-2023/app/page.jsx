@@ -30,9 +30,9 @@ export default function Home() {
   const [showConfirmAddress, setShowConfirmAddress]= useState(false);
   const [coordinates, setCoordinates] = useState(null);
   const [viewState, setViewState] = useState({
-    longitude: -77.20,
-    latitude: 38.71,
-    zoom: 13
+    longitude: -77.03637,
+    latitude: 38.89511,
+    zoom: 6
   });
   const [error, setError] = useState(null);
   const fetchAddressData =  async ()=>{
