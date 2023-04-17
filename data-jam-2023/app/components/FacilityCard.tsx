@@ -34,6 +34,9 @@ interface FacilityCardProps {
             <Button onClick={onPrevious} disabled={currentIndex === 0}>
               Previous
             </Button>
+            <Typography sx={{ justifyContent: 'center', paddingLeft: '5px' }} variant="body2" component="p">
+              Why we picked this facility
+            </Typography>
             <Button onClick={onNext} disabled={currentIndex === totalFacilities - 1}>
               Next
             </Button>
