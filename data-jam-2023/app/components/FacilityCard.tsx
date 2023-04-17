@@ -15,7 +15,7 @@ interface FacilityCardProps {
   }
 
   const FacilityCard = (props: FacilityCardProps) => {
-    const { facilityName, address, contactInformation, onNext, onPrevious, currentIndex, totalFacilities } = props;
+    const { facilityName, address, contactInformation, onPrevious, onNext, currentIndex, totalFacilities } = props;
 
     return (
         <Card sx={{ minWidth: 750, minHeight: 400 }}>
