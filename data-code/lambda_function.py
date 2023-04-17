@@ -34,10 +34,10 @@ def lambda_handler(event, context):
 
     client = boto3.client('s3')
 
-    response = client.get_object(Bucket="datajam-facilities", Key="FindTreatment_Facility_listing_DMV_2023_04_03.csv")
+    response = client.get_object(Bucket="datajam-facilities", Key="FindTreatment_Facility_listing_DMV_2023_04_17.csv")
     
     facility_df = pd.read_csv(response['Body'])
-    facility_df['address'] = facility_df['street1'] + " " + facility_df['city'] + " " + facility_df['state'] + " " + str(facility_df['zip'])
+    # facility_df['address'] = facility_df['street1'] + " " + facility_df['city'] + " " + facility_df['state'] + " " + str(facility_df['zip'])
     
     # Concatenating lat and long to create a consolidated location as accepted by havesine function
     RANGE = event['range']
@@ -46,13 +46,13 @@ def lambda_handler(event, context):
 
     # Find distance from user to each facility and filter for facilities within 5 miles (user edits dist range)
     facility_df['distance']=facility_df['coor'].apply(lambda x: distance_from(user_coord,x))
-    ft_df_sort = facility_df.sort_values('distance').reset_index(drop=True).query('distance <= @RANGE')
+    ft_df_sort = facility_df.query('distance <= @RANGE').sort_values('distance').reset_index(drop=True)
 
-    scores_lst = []
-    for index, row in ft_df_sort.iterrows():
-        f_scores = get_score(row['address'], row['latitude'], row['longitude'])
-        scores_lst.append(list(f_scores.values()))
-    scores_df = pd.DataFrame(scores_lst, columns=['walk','transit','bike','summary'])
+    scores_df = ft_df_sort.apply(lambda row : get_score(row['address'], row['latitude'], row['longitude']), axis=1, result_type='expand')
+    # for index, row in ft_df_sort.iterrows():
+    #     f_scores = get_score(row['address'], row['latitude'], row['longitude'])
+    #     scores_lst.append(list(f_scores.values()))
+    # scores_df = pd.DataFrame(scores_lst, columns=['walk','transit','bike','summary'])
 
     ft_df_scores = pd.concat([ft_df_sort,scores_df],axis=1,join='inner')
     
