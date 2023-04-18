@@ -1,5 +1,5 @@
 "use client"
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import axios from "axios"
 import { 
   AppBar, 
@@ -18,7 +18,7 @@ import {
  } from '@mui/material';
 import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
 import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
-import Map, {Marker} from 'react-map-gl';
+import Map, {Marker, NavigationControl} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 
@@ -34,7 +34,12 @@ export default function Home() {
     latitude: 38.89511,
     zoom: 6
   });
+  const [placeHolderCoor, setPlaceHolderCoor] = useState([
+    [-77.0110598, 38.9082416],
+    [-77.0246933,38.9116931]
+  ])
   const [error, setError] = useState(null);
+  const mapRef = useRef();
   const fetchAddressData =  async ()=>{
       const baseURL= "/api/address"
       const data = await axios.get(baseURL, {
@@ -46,6 +51,21 @@ export default function Home() {
       })
       return data
   }
+
+  const findBound = (coordinates) => {
+    return coordinates.reduce((acc, [lng, lat]) => {
+      if (lat < acc.minLat) acc.minLat = lat;
+      if (lat > acc.maxLat) acc.maxLat = lat;
+      if (lng < acc.minLng) acc.minLng = lng;
+      if (lng > acc.maxLng) acc.maxLng = lng;
+      return acc;
+    }, {
+      minLat: Number.POSITIVE_INFINITY,
+      maxLat: Number.NEGATIVE_INFINITY,
+      minLng: Number.POSITIVE_INFINITY,
+      maxLng: Number.NEGATIVE_INFINITY
+    });
+  };
 
   const handleAddressSubmit = async ()=>{
     const userAddressData = await fetchAddressData()
@@ -65,13 +85,22 @@ export default function Home() {
       setViewState({
         longtitude: location.x,
         latitude: location.y,
-        zoom: 13
+        zoom: 6
       })
   }
 
   useEffect(()=>{
-    console.log("coordinates", coordinates)
-  },[coordinates])
+    if(coordinates !== null){
+      const temp = [...placeHolderCoor, [coordinates.x, coordinates.y]]
+      const bounds = findBound(temp)
+      console.log(bounds)
+        mapRef.current.fitBounds([
+          [bounds.minLng-0.03, bounds.minLat-0.03],
+          [bounds.maxLng+0.03, bounds.maxLat+0.03],
+          {padding:40}
+        ])
+    }
+  },[coordinates, placeHolderCoor, mapRef])
   return (
     <Box>
       <AppBar position="static" sx={{padding: "5px"}}>
@@ -120,13 +149,22 @@ export default function Home() {
             onMove={evt => setViewState(evt.viewState)}
             mapStyle="mapbox://styles/mapbox/streets-v9"
             style={{width: 500, height: 500}}
+            ref={mapRef}
             mapboxAccessToken={"pk.eyJ1IjoicXVhbm5ndXllbnN1bW1pdCIsImEiOiJjbGczdjRxb3MwZXEwM2VzYTBmOG53ankwIn0.3Z2bGiao8TQWuEhojfDBfQ"}
           >
+            <NavigationControl showCompass={false}/>
             { coordinates && 
               <Marker longitude={coordinates.x} latitude={coordinates.y} anchor="bottom" >
                 <PersonPinCircleIcon />
               </Marker>
             }
+            {placeHolderCoor.map((coor)=>{
+              return(
+              <Marker key={coor} longitude={coor[0]} latitude={coor[1]} anchor="bottom" >
+                <PersonPinCircleIcon />
+              </Marker>
+              )
+            })}
             
         </Map>
       </Paper>
