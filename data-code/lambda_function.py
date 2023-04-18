@@ -41,8 +41,8 @@ def lambda_handler(event, context):
     
     # Concatenating lat and long to create a consolidated location as accepted by havesine function
     RANGE = event['range']
-    user_coord = tuple((event['latitude'], event['longitude']))
-    facility_df['coor'] = list(zip(facility_df.latitude, facility_df.longitude))
+    user_coord = tuple((event['longitude'], event['latitude']))
+    facility_df['coor'] = list(zip(facility_df.longitude, facility_df.latitude))
 
     # Find distance from user to each facility and filter for facilities within 5 miles (user edits dist range)
     facility_df['distance']=facility_df['coor'].apply(lambda x: distance_from(user_coord,x))
