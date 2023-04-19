@@ -18,11 +18,26 @@ def get_score(address, lat, long):
     r = requests.get(url)
     rr = json.loads(r.content)
 
-    walk = rr['walkscore']
-    transit = rr['transit']['score']
-    bike = rr['bike']['score']
-    summary = rr['transit']['summary']
-
+    try:
+        walk = rr['walkscore']
+    except KeyError:
+        walk = "Error"
+    
+    try:
+        transit = rr['transit']['score']
+    except KeyError:
+        transit = "Error"
+    
+    try:
+        bike = rr['bike']['score']
+    except KeyError:
+        bike = "Error"
+    
+    try:
+        summary = rr['transit']['summary']
+    except KeyError:
+        summary = "Error"
+    
     return {
         'walkScore': walk,
         'transitScore': transit,
@@ -38,10 +53,11 @@ def lambda_handler(event, context):
     
     # Read csv file from S3 bucket
     facility_df = pd.read_csv(response['Body'])
+    params = event['queryStringParameters']
     
     # Concatenating lat and long to create a consolidated location as accepted by havesine function
-    RANGE = event['range']
-    user_coord = tuple((event['longitude'], event['latitude']))
+    RANGE = float(params['range'])
+    user_coord = tuple((float(params['longitude']), float(params['latitude'])))
     facility_df['coor'] = list(zip(facility_df.longitude, facility_df.latitude))
 
     # Find distance from user to each facility and filter for facilities within 5 miles (user edits dist range)
@@ -53,7 +69,7 @@ def lambda_handler(event, context):
     ft_df_scores = pd.concat([ft_df_sort,scores_df],axis=1,join='inner')
     
     # Get scores for user
-    user_scores = get_score(event['address'], event['latitude'], event['longitude'])
+    user_scores = get_score(params['address'], float(params['latitude']), float(params['longitude']))
 
     # Create list of service codes for each facility
     sc_lst = []
