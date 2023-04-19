@@ -36,8 +36,8 @@ def lambda_handler(event, context):
 
     response = client.get_object(Bucket="datajam-facilities", Key="FindTreatment_Facility_listing_DMV_2023_04_17.csv")
     
+    # Read csv file from S3 bucket
     facility_df = pd.read_csv(response['Body'])
-    # facility_df['address'] = facility_df['street1'] + " " + facility_df['city'] + " " + facility_df['state'] + " " + str(facility_df['zip'])
     
     # Concatenating lat and long to create a consolidated location as accepted by havesine function
     RANGE = event['range']
@@ -48,19 +48,28 @@ def lambda_handler(event, context):
     facility_df['distance']=facility_df['coor'].apply(lambda x: distance_from(user_coord,x))
     ft_df_sort = facility_df.query('distance <= @RANGE').sort_values('distance').reset_index(drop=True)
 
+    # Find walk, transit, and bike scores for sorted facilities
     scores_df = ft_df_sort.apply(lambda row : get_score(row['address'], row['latitude'], row['longitude']), axis=1, result_type='expand')
-    # for index, row in ft_df_sort.iterrows():
-    #     f_scores = get_score(row['address'], row['latitude'], row['longitude'])
-    #     scores_lst.append(list(f_scores.values()))
-    # scores_df = pd.DataFrame(scores_lst, columns=['walk','transit','bike','summary'])
-
     ft_df_scores = pd.concat([ft_df_sort,scores_df],axis=1,join='inner')
     
+    # Get scores for user
     user_scores = get_score(event['address'], event['latitude'], event['longitude'])
+
+    # Create list of service codes for each facility
+    sc_lst = []
+    for index, row in ft_df_scores.loc[:,'mh':'n40'].iterrows():
+        temp_lst = row[row == 1].index.tolist()
+        sc_lst.append([x.upper() for x in temp_lst])
+
+    # Convert df to dictionary
+    ft_dict = ft_df_scores[['name','address','phone','website','type_facility','coor','distance',
+                                 'walkScore','transitScore','bikeScore','transitSummary']].to_dict('records')
+    for i in np.arange(0,len(ft_dict)):
+        ft_dict[i]['service_codes'] = sc_lst[i]
 
     return {
         'statusCode': 200,
         'userScores' : user_scores,
-        'facilityData': ft_df_scores.to_json(orient='records'),
+        'facilityData': ft_dict,
         'body': json.dumps('we did it!')
     }
