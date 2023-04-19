@@ -21,22 +21,22 @@ def get_score(address, lat, long):
     try:
         walk = rr['walkscore']
     except KeyError:
-        walk = "Error"
+        walk = "None"
     
     try:
         transit = rr['transit']['score']
     except KeyError:
-        transit = "Error"
+        transit = "None"
     
     try:
         bike = rr['bike']['score']
     except KeyError:
-        bike = "Error"
+        bike = "None"
     
     try:
         summary = rr['transit']['summary']
     except KeyError:
-        summary = "Error"
+        summary = "None"
     
     return {
         'walkScore': walk,
@@ -83,9 +83,11 @@ def lambda_handler(event, context):
     for i in np.arange(0,len(ft_dict)):
         ft_dict[i]['service_codes'] = sc_lst[i]
 
-    return {
-        'statusCode': 200,
-        'userScores' : user_scores,
-        'facilityData': ft_dict,
-        'body': json.dumps('we did it!')
+    return { 
+        'statusCode': 200, 
+        'headers': {'content-Type': 'application/json'}, 
+        'body': json.dumps({ 
+            'message': 'Success', 
+            'facilityData': json.dumps(ft_dict), 
+            'userScores': json.dumps(user_scores) })
     }
