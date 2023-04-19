@@ -20,8 +20,8 @@ import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
 import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
 import Map, {Marker, NavigationControl} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-
-
+import FacilityCard from './components/FacilityCard'
+import facilityTestData from './data/facility-test-data'
 
 export default function Home() {
   
@@ -89,6 +89,19 @@ export default function Home() {
       })
   }
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handlePrevious = () => {
+    setCurrentIndex(currentIndex - 1);
+  };
+
+  const handleNext = () => {
+    setCurrentIndex(currentIndex + 1);
+  };
+
+  const facility = facilityTestData[currentIndex];
+
+
   useEffect(()=>{
     if(coordinates !== null){
       const temp = [...placeHolderCoor, [coordinates.x, coordinates.y]]
@@ -102,7 +115,9 @@ export default function Home() {
     }
   },[coordinates, placeHolderCoor, mapRef])
   return (
-    <Box>
+    <>
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minHeight: '100vh' }}>
+    <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{padding: "5px"}}>
       <Snackbar open={error!==null} autoHideDuration={6000} onClose={()=>setError(null)}>
         <Alert onClose={()=>setError(null)} severity="success" sx={{ width: '100%' }}>
@@ -182,6 +197,26 @@ export default function Home() {
         </Dialog>
       }
     </Box>
-      
+    </Box>
+      <Box
+      sx={{
+        position: 'absolute',
+        top: '30%',
+        right: '10%',
+        zIndex: '999',
+        maxWidth: '80vw',
+      }}
+      >
+        <FacilityCard
+          facilityName={facility.facilityName}
+          address={facility.address}
+          contactInformation={facility.contactInformation}
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+          currentIndex={currentIndex}
+          totalFacilities={facilityTestData.length}
+        />
+      </Box>
+    </>   
   )
 }
