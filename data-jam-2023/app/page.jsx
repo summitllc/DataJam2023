@@ -1,184 +1,131 @@
 "use client"
-import {useState, useEffect} from 'react';
-import axios from "axios"
-import { 
-  AppBar, 
-  Paper, 
-  Typography, 
-  Box, 
-  TextField, 
-  InputAdornment, 
-  IconButton,
-  Snackbar,
-  Alert,
-  Dialog,
-  DialogTitle,
-  Button,
-  DialogContent
- } from '@mui/material';
-import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
-import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
-import Map, {Marker} from 'react-map-gl';
+import {useEffect, useState} from 'react';
+import {
+    AppBar,
+    Typography,
+    Box,
+    Dialog,
+    DialogTitle,
+    Button,
+    DialogContent, Paper
+} from '@mui/material';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import FacilityCard from './components/FacilityCard'
 import facilityTestData from './data/facility-test-data'
+import AddressInputCard from "@/app/components/AddressInputCard";
+import AddressConfirmDialog from "@/app/components/AddressConfirmDialog";
+import WhyDialog from "@/app/components/WhyDialog";
+import ConditionDialog from "@/app/components/ConditionDialog";
 
 export default function Home() {
-  
-  const [address, setAddress] = useState("");
-  const [addressData, setAddressData]= useState(null);
-  const [showConfirmAddress, setShowConfirmAddress]= useState(false);
-  const [coordinates, setCoordinates] = useState(null);
-  const [viewState, setViewState] = useState({
-    longitude: -77.03637,
-    latitude: 38.89511,
-    zoom: 6
-  });
-  const [error, setError] = useState(null);
-  const fetchAddressData =  async ()=>{
-      const baseURL= "/api/address"
-      const data = await axios.get(baseURL, {
-        params:{
-          address: address,
-          benchmark:"2020",
-          format:"json", 
-        }
-      })
-      return data
-  }
 
-  const handleAddressSubmit = async ()=>{
-    const userAddressData = await fetchAddressData()
-    if(userAddressData){
-      console.log(userAddressData)
-      setAddressData(userAddressData.data)
-      setShowConfirmAddress(true);
-      return
+
+    const [addressData, setAddressData] = useState(null);
+    const [showConfirmAddress, setShowConfirmAddress] = useState(false);
+    const [showWhyDialog, setShowWhyDialog] = useState(false);
+    const [showConditionDialog, setShowConditionDialog] = useState(false);
+    const [coordinates, setCoordinates] = useState(null);
+    const [viewState, setViewState] = useState({
+        longitude: -77.03637,
+        latitude: 38.89511,
+        zoom: 8
+    });
+    const [radius, setRadius] = useState(5);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const handleConfirm = () => {
+        const location = addressData.result.addressMatches[0].coordinates
+        setShowConfirmAddress(false);
+        setCoordinates(location)
+        setViewState({
+            longtitude: location.x,
+            latitude: location.y,
+            zoom: 13
+        })
     }
-    setError("Failed to fetch address")
-  }
 
-  const handleConfirm = ()=>{
-    const location = addressData.result.addressMatches[0].coordinates
-      setShowConfirmAddress(false);
-      setCoordinates(location)
-      setViewState({
-        longtitude: location.x,
-        latitude: location.y,
-        zoom: 13
-      })
-  }
+    const handlePrevious = () => {
+        setCurrentIndex(currentIndex - 1);
+    };
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+    const handleNext = () => {
+        setCurrentIndex(currentIndex + 1);
+    };
 
-  const handlePrevious = () => {
-    setCurrentIndex(currentIndex - 1);
-  };
+    const facility = facilityTestData[currentIndex];
 
-  const handleNext = () => {
-    setCurrentIndex(currentIndex + 1);
-  };
+    useEffect(() => {
+        console.log(showWhyDialog)
+    }, [showWhyDialog])
 
-  const facility = facilityTestData[currentIndex];
+    return (
+        <Paper sx={{backgroundColor: "#dadade"}}>
+            <Box sx={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minHeight: '100vh'}}>
+                <Box sx={{flexGrow: 1}}>
+                    <AppBar position="static" sx={{padding: "10px 15px", height: "5vh"}}>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="a"
+                            href="/"
+                            sx={{
+                                mr: 2,
+                                display: {xs: 'none', md: 'flex'},
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            DATAJAM
+                        </Typography>
+                    </AppBar>
+                    {/*Main Content*/}
+                    <Box sx={{width: "100%", display: "flex"}}>
+                        <Box sx={{width: "50%", height: "95vh"}}>
+                            <AddressInputCard
+                                setAddressData={setAddressData}
+                                setShowConfirmAddress={setShowConfirmAddress}
+                                coordinates={coordinates}
+                                viewState={viewState}
+                                setViewState={setViewState}
+                                setRadius={setRadius}
+                            />
+                        </Box>
+                        <Box sx={{width: "50%", height: "95vh"}}>
+                            <FacilityCard
+                                facilityName={facility.facilityName}
+                                address={facility.address}
+                                contactInformation={facility.contactInformation}
+                                onNext={handleNext}
+                                onPrevious={handlePrevious}
+                                currentIndex={currentIndex}
+                                totalFacilities={facilityTestData.length}
+                                setShowWhyDialog={setShowWhyDialog}
+                                setShowConditionDialog={setShowConditionDialog}
+                            />
+                        </Box>
 
+                    </Box>
 
-  useEffect(()=>{
-    console.log("coordinates", coordinates)
-  },[coordinates])
-  return (
-    <>
-    <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minHeight: '100vh' }}>
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{padding: "5px"}}>
-      <Snackbar open={error!==null} autoHideDuration={6000} onClose={()=>setError(null)}>
-        <Alert onClose={()=>setError(null)} severity="success" sx={{ width: '100%' }}>
-          This is a success message!
-        </Alert>
-      </Snackbar>
-      <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            DATAJAM
-          </Typography>
-      </AppBar>
-      <Paper sx={{padding: "5px", height: "100vh"}}>
-      <TextField 
-        id="outlined-basic" 
-        label="Address" 
-        variant="outlined"  
-        sx={{margin: "10px 0px", width:"500px"}}
-        onChange={(input)=> {setAddress(input.target.value)}}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton onClick={handleAddressSubmit}>
-                <LocationSearchingIcon />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-        <Map
-            {...viewState}
-            onMove={evt => setViewState(evt.viewState)}
-            mapStyle="mapbox://styles/mapbox/streets-v9"
-            style={{width: 500, height: 500}}
-            mapboxAccessToken={"pk.eyJ1IjoicXVhbm5ndXllbnN1bW1pdCIsImEiOiJjbGczdjRxb3MwZXEwM2VzYTBmOG53ankwIn0.3Z2bGiao8TQWuEhojfDBfQ"}
-          >
-            { coordinates && 
-              <Marker longitude={coordinates.x} latitude={coordinates.y} anchor="bottom" >
-                <PersonPinCircleIcon />
-              </Marker>
-            }
-            
-        </Map>
-      </Paper>
-      {(addressData) &&
-        <Dialog open={showConfirmAddress && addressData !==null} sx={{ m: 0, p: 2 }} >
-          <DialogTitle>
-            Confirm your address
-          </DialogTitle>
-          <DialogContent>
-            <Typography>Use the following corrected address?</Typography>
-          <Typography>{addressData.result.addressMatches[0].matchedAddress}</Typography>
-          <Button onClick={handleConfirm} >Yes</Button>
-          <Button>No</Button>
-          </DialogContent>
-        </Dialog>
-      }
-    </Box>
-    </Box>
-      <Box
-      sx={{
-        position: 'absolute',
-        top: '30%',
-        right: '10%',
-        zIndex: '999',
-        maxWidth: '80vw',
-      }}
-      >
-        <FacilityCard
-          facilityName={facility.facilityName}
-          address={facility.address}
-          contactInformation={facility.contactInformation}
-          onNext={handleNext}
-          onPrevious={handlePrevious}
-          currentIndex={currentIndex}
-          totalFacilities={facilityTestData.length}
-        />
-      </Box>
-    </>   
-  )
+                    {(addressData) &&
+                        <AddressConfirmDialog
+                            handleConfirm={handleConfirm}
+                            showConfirmAddress={showConfirmAddress}
+                            addressData={addressData}
+                        />
+                    }
+                    <WhyDialog
+                        setShowWhyDialog={setShowWhyDialog}
+                        showWhyDialog={showWhyDialog}
+                    />
+                    <ConditionDialog
+                        setShowConditionDialog={setShowConditionDialog}
+                        showConditionDialog={showConditionDialog}
+                    />
+                </Box>
+            </Box>
+        </Paper>
+    )
 }

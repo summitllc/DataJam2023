@@ -23,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/address/index.js", "app/api/address/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/address/index.js", "app/api/address/route.js", "app/page.jsx", "app/components/AddressInputCard.jsx"],
   "exclude": ["node_modules"]
 }
