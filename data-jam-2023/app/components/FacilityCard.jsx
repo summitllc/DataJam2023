@@ -4,17 +4,7 @@ import Button from '@mui/material/Button/Button';
 import Typography from '@mui/material/Typography/Typography';
 import CardActions from '@mui/material/CardActions'
 
-interface FacilityCardProps {
-    facilityName: string;
-    address: string;
-    contactInformation: string;
-    onNext: () => void;
-    onPrevious: () => void;
-    currentIndex: number;
-    totalFacilities: number;
-}
-
-const FacilityCard = (props: FacilityCardProps) => {
+const FacilityCard = (props) => {
     const {
         facilityName,
         address,
