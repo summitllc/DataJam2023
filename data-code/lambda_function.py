@@ -49,11 +49,20 @@ def lambda_handler(event, context):
 
     client = boto3.client('s3')
 
-    response = client.get_object(Bucket="datajam-facilities", Key="FindTreatment_Facility_listing_DMV_2023_04_17.csv")
+    response = client.get_object(Bucket="datajam-facilities", Key="FindTreatment_Facility_listing_DMV_2023_04_20.csv")
     
     # Read csv file from S3 bucket
     facility_df = pd.read_csv(response['Body'])
     params = event['queryStringParameters']
+
+    # Filter facility data for those that fulfill code requirements
+    facility_df['code_lst'] = [str(x).split(",") for x in facility_df['codes']]
+
+    ind_lst = []
+    for c in np.arange(0,len(facility_df['code_lst'])):
+        if set(params['codes']).issubset(facility_df['code_lst'][c]):
+            ind_lst.append(c)
+    facility_df = facility_df.iloc[ind_lst]
     
     # Concatenating lat and long to create a consolidated location as accepted by havesine function
     RANGE = float(params['range'])
@@ -71,17 +80,9 @@ def lambda_handler(event, context):
     # Get scores for user
     user_scores = get_score(params['address'], float(params['latitude']), float(params['longitude']))
 
-    # Create list of service codes for each facility
-    sc_lst = []
-    for index, row in ft_df_scores.loc[:,'mh':'n40'].iterrows():
-        temp_lst = row[row == 1].index.tolist()
-        sc_lst.append([x.upper() for x in temp_lst])
-
     # Convert df to dictionary
-    ft_dict = ft_df_scores[['name','address','phone','website','type_facility','coor','distance',
+    ft_dict = ft_df_scores[['name','address','phone','website','coor','distance','code_lst',
                                  'walkScore','transitScore','bikeScore','transitSummary']].to_dict('records')
-    for i in np.arange(0,len(ft_dict)):
-        ft_dict[i]['service_codes'] = sc_lst[i]
 
     return { 
         'statusCode': 200, 
