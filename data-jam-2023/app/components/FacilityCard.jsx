@@ -6,9 +6,9 @@ import CardActions from '@mui/material/CardActions'
 
 const FacilityCard = (props) => {
     const {
-        facilityName,
-        address,
-        contactInformation,
+        name,
+        street,
+        phone,
         onPrevious,
         onNext,
         currentIndex,
@@ -62,13 +62,13 @@ const FacilityCard = (props) => {
 
                 <Box sx={{textAlign: 'center'}}>
                     <Typography variant="h6" component="h6">
-                        {facilityName}
+                        {name}
                     </Typography>
                     <Typography variant="body2" component="p">
-                        {address}
+                        {street}
                     </Typography>
                     <Typography variant="body2" component="p">
-                        {contactInformation}
+                        {phone}
                     </Typography>
                 </Box>
                 <Box sx={{

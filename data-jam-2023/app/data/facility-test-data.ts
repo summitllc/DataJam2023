@@ -196,10 +196,10 @@ interface Facility {
   
   const facilityTestData: Facility[] = [
     {
-      name: "Test Facility #1",
+      name: "Test Facility Full Data #1",
       name1: "So Others Might Eat",
       name2: null,
-      street1: "Test street 1",
+      street1: "Test 1 Street",
       street2: null,
       city: "Washington",
       state: "DC",
@@ -587,7 +587,7 @@ interface Facility {
       name: "Test Facility Full Data #3",
       name1: "So Others Might Eat 3",
       name2: null,
-      street1: "Street Facility 3 Street Test",
+      street1: "Test 3 Street",
       street2: null,
       city: "Washington",
       state: "DC",
