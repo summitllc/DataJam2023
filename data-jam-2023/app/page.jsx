@@ -53,9 +53,6 @@ export default function Home() {
     };
 
     const facility = facilityTestData[currentIndex];
-    let i= 0;
-    Object.keys(facility).forEach(e => console.log(i++));
-
 
     useEffect(() => {
         console.log(showWhyDialog)
