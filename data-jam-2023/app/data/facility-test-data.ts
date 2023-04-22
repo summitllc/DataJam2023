@@ -98,7 +98,6 @@ interface Facility {
   nrt: string | null;
   nsc: string | null;
   prs: string | null;
-
   stu: string | null;
   sps: string | null;
   semp: string | null;
