@@ -7,7 +7,7 @@ import {
     Dialog,
     DialogTitle,
     Button,
-    DialogContent, Paper
+    DialogContent, Paper, Modal, Card, CardContent
 } from '@mui/material';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import FacilityCard from './components/FacilityCard'
@@ -16,6 +16,7 @@ import AddressInputCard from "@/app/components/AddressInputCard";
 import AddressConfirmDialog from "@/app/components/AddressConfirmDialog";
 import WhyDialog from "@/app/components/WhyDialog";
 import ConditionDialog from "@/app/components/ConditionDialog";
+import IntroPopUp from "@/app/components/IntroPopUp"
 
 export default function Home() {
 
@@ -53,6 +54,18 @@ export default function Home() {
     };
 
     const facility = facilityTestData[currentIndex];
+
+    // Since Next is SSR, need to use useEffect to access localStorage after the component mounted.
+    const [alreadyAccessedWebsite, setAlreadyAccessedWebsite] = useState(false);
+    useEffect(() => {
+        const previouslyAccessed = localStorage.getItem('alreadyAccessedWebsite');
+        setAlreadyAccessedWebsite(previouslyAccessed);
+      }, []);
+
+    const handlePopUpClose = () => {
+        localStorage.setItem('alreadyAccessedWebsite', true);
+        setAlreadyAccessedWebsite(true);
+    };
 
     useEffect(() => {
         console.log(showWhyDialog)
@@ -123,6 +136,10 @@ export default function Home() {
                     <ConditionDialog
                         setShowConditionDialog={setShowConditionDialog}
                         showConditionDialog={showConditionDialog}
+                    />
+                    <IntroPopUp
+                        open={!alreadyAccessedWebsite}
+                        handlePopUpClose={handlePopUpClose}
                     />
                 </Box>
             </Box>
