@@ -55,7 +55,6 @@ export default function Home() {
 
     const facility = facilityTestData[currentIndex];
 
-    // Since Next is SSR, need to use useEffect to access localStorage after the component mounted.
     const [alreadyAccessedWebsite, setAlreadyAccessedWebsite] = useState(true);
     useEffect(() => {
         const previouslyAccessed = localStorage.getItem('alreadyAccessedWebsite');
