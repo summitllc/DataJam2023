@@ -1,11 +1,5 @@
 "use client"
 import {useEffect, useState} from 'react';
-import {
-    AppBar,
-    Typography,
-    Box,
-    Paper
-} from '@mui/material';
 import {AppBar, Box, Paper, Typography} from '@mui/material';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import FacilityCard from './components/FacilityCard'
