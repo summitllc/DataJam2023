@@ -1,5 +1,14 @@
 "use client"
 import {useEffect, useState} from 'react';
+import {
+    AppBar,
+    Typography,
+    Box,
+    Dialog,
+    DialogTitle,
+    Button,
+    DialogContent, Paper, Modal, Card, CardContent
+} from '@mui/material';
 import {AppBar, Box, Paper, Typography} from '@mui/material';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import FacilityCard from './components/FacilityCard'
@@ -8,6 +17,7 @@ import AddressInputCard from "@/app/components/AddressInputCard";
 import AddressConfirmDialog from "@/app/components/AddressConfirmDialog";
 import WhyDialog from "@/app/components/WhyDialog";
 import ConditionDialog from "@/app/components/ConditionDialog";
+import IntroPopUp from "@/app/components/IntroPopUp"
 import axios from "axios";
 
 export default function Home() {
@@ -77,6 +87,17 @@ export default function Home() {
 
     const facility = facilityTestData[currentIndex];
 
+    const [alreadyAccessedWebsite, setAlreadyAccessedWebsite] = useState(true);
+    useEffect(() => {
+        const previouslyAccessed = localStorage.getItem('alreadyAccessedWebsite');
+        setAlreadyAccessedWebsite(previouslyAccessed);
+      }, []);
+
+    const handlePopUpClose = () => {
+        localStorage.setItem('alreadyAccessedWebsite', true);
+        setAlreadyAccessedWebsite(true);
+    };
+
     useEffect(() => {
         console.log(showWhyDialog)
     }, [showWhyDialog])
@@ -120,9 +141,9 @@ export default function Home() {
                         </Box>
                         <Box sx={{width: "50%", height: "95vh"}}>
                             <FacilityCard
-                                facilityName={facility.facilityName}
-                                address={facility.address}
-                                contactInformation={facility.contactInformation}
+                                name={facility.name}
+                                street={facility.street1}
+                                phone={facility.phone}
                                 onNext={handleNext}
                                 onPrevious={handlePrevious}
                                 currentIndex={currentIndex}
@@ -150,6 +171,10 @@ export default function Home() {
                         showConditionDialog={showConditionDialog}
                         setFilterObject={setFilterObject}
                         filterObject={filterObject}
+                    />
+                    <IntroPopUp
+                        open={!alreadyAccessedWebsite}
+                        handlePopUpClose={handlePopUpClose}
                     />
                 </Box>
             </Box>
