@@ -85,7 +85,7 @@ const FacilityCard = (props) => {
                         setShowWhyDialog(true)
                     }}>
                         <Link sx={{justifyContent: 'center', paddingLeft: '5px'}} variant="body2" component="p">
-                            Why we picked this facility
+                            View Score
                         </Link>
                     </Button>
 
@@ -115,9 +115,9 @@ const FacilityCard = (props) => {
                     <Slider
                         sx={{width: "60%"}}
                         marks={marks}
-                        defaultValue={1}
+                        defaultValue={3}
                         step={1}
-                        min={0}
+                        min={1}
                         max={5}
                         valueLabelDisplay={"auto"}
                         onChange={(event) => {
@@ -130,9 +130,9 @@ const FacilityCard = (props) => {
                     <Slider
                         sx={{width: "60%"}}
                         marks={marks}
-                        defaultValue={1}
+                        defaultValue={3}
                         step={1}
-                        min={0}
+                        min={1}
                         max={5}
                         valueLabelDisplay={"auto"}
                         onChange={(event) => {
@@ -145,9 +145,9 @@ const FacilityCard = (props) => {
                     <Slider
                         sx={{width: "60%"}}
                         marks={marks}
-                        defaultValue={1}
+                        defaultValue={3}
                         step={1}
-                        min={0}
+                        min={1}
                         max={5}
                         valueLabelDisplay={"auto"}
                         onChange={(event) => {
@@ -155,11 +155,21 @@ const FacilityCard = (props) => {
                         }}
                     />
                 </Box>
-                <Button onClick={() => {
-                    setShowConditionDialog(true)
-                }}>
-                    <Typography>Treatment for a specific condition?</Typography>
-                </Button>
+                <Box sx={sliderBoxStyle}>
+                    <Typography>Distance</Typography>
+                    <Slider
+                        sx={{width: "60%"}}
+                        marks={marks}
+                        defaultValue={3}
+                        step={1}
+                        min={1}
+                        max={5}
+                        valueLabelDisplay={"auto"}
+                        onChange={(event) => {
+                            console.log("slide")
+                        }}
+                    />
+                </Box>
             </Box>
         </Paper>
     );
