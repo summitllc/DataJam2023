@@ -7,13 +7,22 @@ import {
     InputAdornment,
     IconButton, Slider, Typography, Box,
 } from '@mui/material';
-import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
+import SearchIcon from '@mui/icons-material/Search';
 import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
 import Map, {Marker, NavigationControl} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import Button from "@mui/material/Button/Button";
 
 const AddressInputCard = (props) => {
-    const {coordinates, setShowConfirmAddress, setAddressData, setViewState, viewState, setRadius} = props
+    const {
+        coordinates,
+        setShowConfirmAddress,
+        setAddressData,
+        setViewState,
+        viewState,
+        setRadius,
+        setShowConditionDialog
+    } = props
     const [address, setAddress] = useState("");
     const [placeHolderCoor, setPlaceHolderCoor] = useState([
         [-77.0110598, 38.9082416],
@@ -112,7 +121,7 @@ const AddressInputCard = (props) => {
                     endAdornment: (
                         <InputAdornment position="end">
                             <IconButton onClick={handleAddressSubmit}>
-                                <LocationSearchingIcon/>
+                                <SearchIcon/>
                             </IconButton>
                         </InputAdornment>
                     ),
@@ -132,11 +141,19 @@ const AddressInputCard = (props) => {
                 />
             </Box>
 
+            <Box>
+                <Button variant={"outlined"} onClick={() => {
+                    setShowConditionDialog(true)
+                }}>
+                    <Typography>Filter Facilities</Typography>
+                </Button>
+            </Box>
+
             <Map
                 {...viewState}
                 onMove={evt => setViewState(evt.viewState)}
                 mapStyle="mapbox://styles/mapbox/streets-v9"
-                style={{width: "100%", height: "100%"}}
+                style={{width: "90%", height: "90%"}}
                 ref={mapRef}
                 mapboxAccessToken={"pk.eyJ1IjoicXVhbm5ndXllbnN1bW1pdCIsImEiOiJjbGczdjRxb3MwZXEwM2VzYTBmOG53ankwIn0.3Z2bGiao8TQWuEhojfDBfQ"}
             >

@@ -25,6 +25,13 @@ export default function Home() {
     const [showWhyDialog, setShowWhyDialog] = useState(false);
     const [showConditionDialog, setShowConditionDialog] = useState(false);
     const [coordinates, setCoordinates] = useState(null);
+    const [filterObject, setFilterObject] = useState({
+        "languages": [],
+        "Payment Options": [],
+        "Pharmacotherapies": [],
+        "Special Groups": [],
+        "Treatment Approaches": []
+    })
     const [viewState, setViewState] = useState({
         longitude: -77.03637,
         latitude: 38.89511,
@@ -91,6 +98,7 @@ export default function Home() {
                                 viewState={viewState}
                                 setViewState={setViewState}
                                 setRadius={setRadius}
+                                setShowConditionDialog={setShowConditionDialog}
                             />
                         </Box>
                         <Box sx={{width: "50%", height: "95vh"}}>
@@ -123,6 +131,8 @@ export default function Home() {
                     <ConditionDialog
                         setShowConditionDialog={setShowConditionDialog}
                         showConditionDialog={showConditionDialog}
+                        setFilterObject={setFilterObject}
+                        filterObject={filterObject}
                     />
                 </Box>
             </Box>

@@ -9,57 +9,59 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-
-const conditons =
-    ["Chlorpromazine",
-        "Droperidol",
-        "Fluphenazine",
-        "Haloperidol",
-        "Loxapine",
-        "Perphenazine",
-        "Pimozide",
-        "Prochlorperazine",
-        "Thiothixene",
-        "Thioridazine",
-        "Trifluoperazine",
-        "Aripiprazole",
-        "Asenapine",
-        "Brexpiprazole",
-        "Cariprazine",
-        "Clozapine",
-        "IIoperidone",
-        "Lurasidone",
-        "Olanzapine",
-        "Olanzapine/Fluoxetine combination",
-        "Paliperidone",
-        "Quetiapine",
-        "Risperidone",
-        "Ziprasidone",
-        "Nicotine replacement",
-        "Non-nicotine smoking/tobacco cessation"]
+import serviceCode from "@/app/ServiceCode";
+import {createRef, useEffect, useRef} from "react";
 
 const ConditionDialog = (props) => {
-    const {showConditionDialog, setShowConditionDialog} = props
+    const {showConditionDialog, setShowConditionDialog, setFilterObject, filterObject} = props
+    const handleAutoCompleteChange = (event, value, label) => {
+        setFilterObject((prev) => {
+            return {...prev, [label]: value}
+        })
+    }
+    
     return (
-        <Dialog open={showConditionDialog} fullWidth={true} maxWidth={"md"} sx={{height: "40vh"}}>
+        <Dialog open={showConditionDialog} fullWidth={true} maxWidth={"md"}>
             <DialogTitle>
-                Select condition(s)
+                Select Filter(s)
             </DialogTitle>
-            <DialogContent>
-                <Autocomplete
-                    multiple
-                    id="tags-outlined"
-                    options={conditons}
-                    getOptionLabel={(option) => option}
-                    filterSelectedOptions
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label="Condition(s)"
-                            placeholder="Select a condition"
+            <DialogContent
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-around",
+                    minHeight: "50vh"
+                }}
+            >
+                {serviceCode.map((serviceObject, index) => {
+                    const label = Object.keys(serviceObject)
+                    const options = Object.keys(serviceObject[label[0]])
+                    return (
+                        <Autocomplete
+                            sx={{margin: "15px 0px"}}
+                            key={label[0]}
+                            multiple
+                            value={filterObject[label[0]]}
+                            id="tags-outlined"
+                            onChange={(event, value) => {
+                                handleAutoCompleteChange(event, value, label[0])
+                            }}
+                            value={filterObject[label]}
+                            options={options}
+                            getOptionLabel={(option) => option}
+                            filterSelectedOptions
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    key={label[0]}
+                                    label={label[0]}
+                                    placeholder={label[0]}
+                                />
+                            )}
                         />
-                    )}
-                />
+                    )
+                })}
+
                 <Button onClick={() => {
                     setShowConditionDialog(false)
                 }}>Okay</Button>
