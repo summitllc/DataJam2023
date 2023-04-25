@@ -4,10 +4,7 @@ import {
     AppBar,
     Typography,
     Box,
-    Dialog,
-    DialogTitle,
-    Button,
-    DialogContent, Paper, Modal, Card, CardContent
+    Paper
 } from '@mui/material';
 import {AppBar, Box, Paper, Typography} from '@mui/material';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -68,7 +65,6 @@ export default function Home() {
         const codes = ["IDD", "TELE", "MD"]
 
         const data = await fetchFacilityData(address, long, lat, range, codes)
-        console.log("facilities data", data)
 
         setViewState({
             longtitude: location.x,
@@ -91,16 +87,12 @@ export default function Home() {
     useEffect(() => {
         const previouslyAccessed = localStorage.getItem('alreadyAccessedWebsite');
         setAlreadyAccessedWebsite(previouslyAccessed);
-      }, []);
+    }, []);
 
     const handlePopUpClose = () => {
         localStorage.setItem('alreadyAccessedWebsite', true);
         setAlreadyAccessedWebsite(true);
     };
-
-    useEffect(() => {
-        console.log(showWhyDialog)
-    }, [showWhyDialog])
 
     return (
         <Paper sx={{backgroundColor: "#dadade"}}>
