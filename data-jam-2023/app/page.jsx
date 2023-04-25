@@ -4,11 +4,9 @@ import {
     AppBar,
     Typography,
     Box,
-    Dialog,
-    DialogTitle,
-    Button,
-    DialogContent, Paper, Modal, Card, CardContent
+    Paper
 } from '@mui/material';
+import {AppBar, Box, Paper, Typography} from '@mui/material';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import FacilityCard from './components/FacilityCard'
 import facilityTestData from './data/facility-test-data'
@@ -17,6 +15,7 @@ import AddressConfirmDialog from "@/app/components/AddressConfirmDialog";
 import WhyDialog from "@/app/components/WhyDialog";
 import ConditionDialog from "@/app/components/ConditionDialog";
 import IntroPopUp from "@/app/components/IntroPopUp"
+import axios from "axios";
 
 export default function Home() {
 
@@ -26,6 +25,7 @@ export default function Home() {
     const [showWhyDialog, setShowWhyDialog] = useState(false);
     const [showConditionDialog, setShowConditionDialog] = useState(false);
     const [coordinates, setCoordinates] = useState(null);
+    const [facilitiesData, setFacilitiesData] = useState([])
     const [filterObject, setFilterObject] = useState({
         "languages": [],
         "Payment Options": [],
@@ -41,10 +41,31 @@ export default function Home() {
     const [radius, setRadius] = useState(5);
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const handleConfirm = () => {
+    const fetchFacilityData = async (address, long, lat, range, codes) => {
+        const baseURL = "/api/facilities"
+        return await axios.get(baseURL, {
+            params: {
+                address: address,
+                long: long,
+                lat: lat,
+                range: range,
+                codes: codes
+            }
+        })
+    }
+
+    const handleConfirm = async () => {
         const location = addressData.result.addressMatches[0].coordinates
         setShowConfirmAddress(false);
         setCoordinates(location)
+        const address = addressData.result.addressMatches[0].matchedAddress
+        const range = radius
+        const long = location.x
+        const lat = location.y
+        const codes = ["IDD", "TELE", "MD"]
+
+        const data = await fetchFacilityData(address, long, lat, range, codes)
+
         setViewState({
             longtitude: location.x,
             latitude: location.y,
@@ -66,16 +87,12 @@ export default function Home() {
     useEffect(() => {
         const previouslyAccessed = localStorage.getItem('alreadyAccessedWebsite');
         setAlreadyAccessedWebsite(previouslyAccessed);
-      }, []);
+    }, []);
 
     const handlePopUpClose = () => {
         localStorage.setItem('alreadyAccessedWebsite', true);
         setAlreadyAccessedWebsite(true);
     };
-
-    useEffect(() => {
-        console.log(showWhyDialog)
-    }, [showWhyDialog])
 
     return (
         <Paper sx={{backgroundColor: "#dadade"}}>
@@ -111,6 +128,7 @@ export default function Home() {
                                 setViewState={setViewState}
                                 setRadius={setRadius}
                                 setShowConditionDialog={setShowConditionDialog}
+                                addressData={addressData}
                             />
                         </Box>
                         <Box sx={{width: "50%", height: "95vh"}}>
