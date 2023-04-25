@@ -9,6 +9,7 @@ import AddressConfirmDialog from "@/app/components/AddressConfirmDialog";
 import WhyDialog from "@/app/components/WhyDialog";
 import ConditionDialog from "@/app/components/ConditionDialog";
 import IntroPopUp from "@/app/components/IntroPopUp"
+import LoadingPopUp from "@/app/components/LoadingPopUp"
 import axios from "axios";
 
 export default function Home() {
@@ -49,6 +50,8 @@ export default function Home() {
     }
 
     const handleConfirm = async () => {
+        // Uncomment setLoading functions once the API for fetchingFacilityData is working.
+        // setLoading(true);
         const location = addressData.result.addressMatches[0].coordinates
         setShowConfirmAddress(false);
         setCoordinates(location)
@@ -59,6 +62,7 @@ export default function Home() {
         const codes = ["IDD", "TELE", "MD"]
 
         const data = await fetchFacilityData(address, long, lat, range, codes)
+        // setLoading(false);
 
         setViewState({
             longtitude: location.x,
@@ -88,6 +92,8 @@ export default function Home() {
         setAlreadyAccessedWebsite(true);
     };
 
+    const [showLoading, setLoading ] = useState(false);
+
     return (
         <Paper sx={{backgroundColor: "#dadade"}}>
             <Box sx={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minHeight: '100vh'}}>
@@ -115,6 +121,7 @@ export default function Home() {
                     <Box sx={{width: "100%", display: "flex"}}>
                         <Box sx={{width: "50%", height: "95vh"}}>
                             <AddressInputCard
+                                setLoading={setLoading}
                                 setAddressData={setAddressData}
                                 setShowConfirmAddress={setShowConfirmAddress}
                                 coordinates={coordinates}
@@ -161,6 +168,10 @@ export default function Home() {
                     <IntroPopUp
                         open={!alreadyAccessedWebsite}
                         handlePopUpClose={handlePopUpClose}
+                    />
+                    <LoadingPopUp
+                        open={showLoading}
+                        close={!showLoading}
                     />
                 </Box>
             </Box>

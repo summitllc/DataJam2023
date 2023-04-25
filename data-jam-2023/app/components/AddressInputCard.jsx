@@ -10,6 +10,7 @@ import Button from "@mui/material/Button/Button";
 
 const AddressInputCard = (props) => {
     const {
+        setLoading,
         coordinates,
         setShowConfirmAddress,
         setAddressData,
@@ -72,7 +73,9 @@ const AddressInputCard = (props) => {
     };
 
     const handleAddressSubmit = async () => {
-        const userAddressData = await fetchAddressData()
+        setLoading(true);
+        const userAddressData = await fetchAddressData();
+        setLoading(false);
         if (userAddressData) {
             console.log(userAddressData)
             setAddressData(userAddressData.data)
