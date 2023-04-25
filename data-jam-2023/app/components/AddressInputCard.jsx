@@ -1,15 +1,10 @@
 "use client"
-import {useState, useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import axios from "axios"
-import {
-    Paper,
-    TextField,
-    InputAdornment,
-    IconButton, Slider, Typography, Box,
-} from '@mui/material';
+import {Box, IconButton, InputAdornment, Paper, Slider, TextField, Typography,} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
-import Map, {Marker, NavigationControl} from 'react-map-gl';
+import Map, {Marker, NavigationControl, Popup} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Button from "@mui/material/Button/Button";
 
@@ -21,7 +16,7 @@ const AddressInputCard = (props) => {
         setViewState,
         viewState,
         setRadius,
-        setShowConditionDialog
+        setShowConditionDialog, addressData
     } = props
     const [address, setAddress] = useState("");
     const [placeHolderCoor, setPlaceHolderCoor] = useState([
@@ -29,6 +24,7 @@ const AddressInputCard = (props) => {
         [-77.0246933, 38.9116931]
     ])
     const [error, setError] = useState(null);
+    const [showPopup, setShowPopup] = useState(false);
     const mapRef = useRef();
 
     const marks = [
@@ -51,14 +47,13 @@ const AddressInputCard = (props) => {
     ]
     const fetchAddressData = async () => {
         const baseURL = "/api/address"
-        const data = await axios.get(baseURL, {
+        return await axios.get(baseURL, {
             params: {
                 address: address,
                 benchmark: "2020",
                 format: "json",
             }
         })
-        return data
     }
 
     const findBound = (coordinates) => {
@@ -159,10 +154,31 @@ const AddressInputCard = (props) => {
             >
                 <NavigationControl showCompass={false}/>
                 {coordinates &&
-                    <Marker longitude={coordinates.x} latitude={coordinates.y} anchor="bottom">
+                    <Marker longitude={coordinates.x} latitude={coordinates.y} anchor="bottom" onClick={(event) => {
+                        console.log("clicked")
+                        setShowPopup((prevState) => (
+                            !prevState
+                        ))
+                        event.originalEvent.stopPropagation()
+
+                    }}>
                         <PersonPinCircleIcon sx={{color: "blue"}}/>
                     </Marker>
                 }
+                {showPopup && coordinates ?
+                    <Popup
+                        anchor="top"
+                        longitude={Number(coordinates.x)}
+                        latitude={Number(coordinates.y)}
+                        onClose={() => setShowPopup(false)}
+                    >
+                        <div>
+                            {addressData.result.addressMatches[0].matchedAddress}
+                        </div>
+                    </Popup> :
+                    <></>
+                }
+
                 {placeHolderCoor.map((coor) => {
                     return (
                         <Marker key={coor} longitude={coor[0]} latitude={coor[1]} anchor="bottom">
