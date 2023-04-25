@@ -107,9 +107,9 @@ export default function Home() {
                         </Box>
                         <Box sx={{width: "50%", height: "95vh"}}>
                             <FacilityCard
-                                facilityName={facility.facilityName}
-                                address={facility.address}
-                                contactInformation={facility.contactInformation}
+                                name={facility.name}
+                                street={facility.street1}
+                                phone={facility.phone}
                                 onNext={handleNext}
                                 onPrevious={handlePrevious}
                                 currentIndex={currentIndex}
