@@ -1,7 +1,7 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'Summit Datajam 2023',
+  title: 'Mental Health Treatment in DC - Maryland - Virginia (DMV)',
   description: 'Created by the Data Science team at Summit',
 }
 

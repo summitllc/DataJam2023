@@ -11,6 +11,7 @@ import IntroPopUp from "@/app/components/IntroPopUp"
 import LoadingPopUp from "@/app/components/LoadingPopUp"
 import axios from "axios";
 import {serviceCode, dataDictionary} from "@/app/ServiceCode";
+import Image from 'next/image';
 
 export default function Home() {
 
@@ -165,25 +166,32 @@ export default function Home() {
         <Paper sx={{backgroundColor: "#dadade"}}>
             <Box sx={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minHeight: '100vh'}}>
                 <Box sx={{flexGrow: 1}}>
-                    <AppBar position="static" sx={{padding: "10px 15px", height: "5vh"}}>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="a"
-                            href="/"
-                            sx={{
-                                mr: 2,
-                                display: {xs: 'none', md: 'flex'},
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
-                            }}
-                        >
-                            DATAJAM
-                        </Typography>
-                    </AppBar>
+                <AppBar position="static" sx={{padding: "10px 15px", height: "6vh", display: 'flex'}}>
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        sx={{
+                        flexGrow: 1,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        fontFamily: 'monospace',
+                        fontWeight: 700,
+                        letterSpacing: '.3rem',
+                        color: 'inherit',
+                        }}
+                    >
+                        <a href="/">Mental Health Treatment in DC - Maryland - Virginia (DMV)</a>
+                        <div style={{ display: 'flex', alignItems: 'center'}}>
+                            <a href="https://github.com/summitllc/DataJam2023" target="_blank">
+                                <Image src="/githublogo.png" alt="GitHub Logo" width={26} height={26} style={{ marginTop: '8px', marginRight: '10px' }} />
+                            </a>
+                            <a href="https://www.summitllc.us/" target="_blank">
+                                <Image src="/summitlogo.png" alt="Summit Logo" width={22} height={22} style={{ marginTop: '8px' }}/>
+                            </a>
+                        </div>
+                    </Typography>
+                </AppBar>
                     {/*Main Content*/}
                     <Box sx={{width: "100%", display: "flex"}}>
                         <Box sx={{width: "50%", height: "95vh"}}>
@@ -243,6 +251,22 @@ export default function Home() {
                         }}
                     />
                 </Box>
+                <AppBar position="absolute" sx={{top: "auto", bottom: -60, padding: "10px 15px", height: "6vh"}}>
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        sx={{
+                            mr: 2,
+                            display: {xs: 'none', md: 'flex'},
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit'
+                        }}
+                    >
+                        <p>Summit Consulting, LLC (c) 2023 </p>
+                    </Typography>
+                </AppBar>
             </Box>
         </Paper>
     )

@@ -63,7 +63,7 @@ const ConditionDialog = (props) => {
 
                 <Button onClick={() => {
                     setShowConditionDialog(false)
-                }}>Okay</Button>
+                }}>Ok</Button>
                 <Button onClick={() => {
                     setShowConditionDialog(false)
                 }}>Cancel</Button>

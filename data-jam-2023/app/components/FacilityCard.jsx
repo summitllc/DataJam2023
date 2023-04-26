@@ -102,6 +102,7 @@ const FacilityCard = (props) => {
             </Box>
             <Box sx={{
                 border: "#dadade solid 2px",
+                borderRadius: "16px",
                 marginTop: "15px",
                 width: "80%",
                 display: "flex",
