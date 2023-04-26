@@ -34,6 +34,7 @@ const FacilityCard = (props) => {
             <Typography variant={"h5"} textAlign={"center"}> Our Recommended Facilities</Typography>
             <Box sx={{
                 border: "#dadade solid 2px",
+                borderRadius: "16px",
                 marginTop: "15px",
                 width: "80%",
                 display: "flex",
@@ -85,6 +86,7 @@ const FacilityCard = (props) => {
             </Box>
             <Box sx={{
                 border: "#dadade solid 2px",
+                borderRadius: "16px",
                 marginTop: "15px",
                 width: "80%",
                 display: "flex",
