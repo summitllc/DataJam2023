@@ -54,6 +54,9 @@ const FacilityCard = (props) => {
                         justifyContent: "space-evenly"
                     }}>
                         <Typography variant="h6" component="h6">
+                            Rank {currentIndex + 1}
+                        </Typography>
+                        <Typography variant="h6" component="h6">
                             {facilitiesData[currentIndex].name}
                         </Typography>
                         <Typography variant="body2" component="p">
@@ -109,7 +112,7 @@ const FacilityCard = (props) => {
                 marginBottom: "5px"
             }}>
 
-                <PreferenceCard title={"Walkability"}/>
+                <PreferenceCard title={"Walkability"} name={""}/>
                 <PreferenceCard title={"Metro Accessibility"}/>
                 <PreferenceCard title={"Bike Friendly"}/>
             </Box>
