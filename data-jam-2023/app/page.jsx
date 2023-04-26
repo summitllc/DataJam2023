@@ -20,6 +20,7 @@ export default function Home() {
     const [showConditionDialog, setShowConditionDialog] = useState(false);
     const [coordinates, setCoordinates] = useState(null);
     const [facilitiesData, setFacilitiesData] = useState([])
+    const [userScore, setUserScore] = useState({})
     const [filterObject, setFilterObject] = useState({
         "languages": [],
         "Payment Options": [],
@@ -40,10 +41,10 @@ export default function Home() {
         return await axios.get(baseURL, {
             params: {
                 address: address,
-                long: long,
-                lat: lat,
+                longitude: long,
+                latitude: lat,
                 range: range,
-                codes: codes
+                codes: `${codes.toString()}`
             }
         })
     }
@@ -58,7 +59,9 @@ export default function Home() {
         const lat = location.y
         const codes = ["IDD", "TELE", "MD"]
 
-        const data = await fetchFacilityData(address, long, lat, range, codes)
+        const {data} = await fetchFacilityData(address, long, lat, range, codes)
+        setFacilitiesData(JSON.parse(data.result.facilityData))
+        setUserScore(JSON.parse(data.result.userScores))
 
         setViewState({
             longtitude: location.x,

@@ -104,31 +104,42 @@ const AddressInputCard = (props) => {
             height: "98%",
             margin: "1% 1%"
         }}>
-            <TextField
-                id="outlined-basic"
-                label="Address"
-                variant="outlined"
-                sx={{margin: "10px 0px", width: "500px"}}
-                onChange={(input) => {
-                    setAddress(input.target.value)
-                }}
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <IconButton onClick={handleAddressSubmit}>
-                                <SearchIcon/>
-                            </IconButton>
-                        </InputAdornment>
-                    ),
-                }}
-            />
+            <Box sx={{display: "flex", alignItems: "baseline", justifyContent: "space-between"}}>
+                <TextField
+                    id="outlined-basic"
+                    label="Address"
+                    variant="outlined"
+                    sx={{margin: "10px 0px", width: "600px"}}
+                    onChange={(input) => {
+                        setAddress(input.target.value)
+                    }}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton onClick={handleAddressSubmit}>
+                                    <SearchIcon/>
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+                <Box>
+                    <Button variant={"outlined"} onClick={() => {
+                        setShowConditionDialog(true)
+                    }}>
+                        <Typography>Filter Facilities</Typography>
+                    </Button>
+                </Box>
+            </Box>
+
             <Box sx={{display: "flex", marginBottom: "10px"}}>
-                <Typography> Radius: </Typography>
+                <Typography> Distance: {"    "}</Typography>
                 <Slider
                     sx={{width: "60%"}}
                     marks={marks}
                     defaultValue={5}
                     step={1}
+                    max={50}
                     valueLabelDisplay={"auto"}
                     onChange={(event) => {
                         setRadius(event.target.value)
@@ -136,19 +147,11 @@ const AddressInputCard = (props) => {
                 />
             </Box>
 
-            <Box>
-                <Button variant={"outlined"} onClick={() => {
-                    setShowConditionDialog(true)
-                }}>
-                    <Typography>Filter Facilities</Typography>
-                </Button>
-            </Box>
-
             <Map
                 {...viewState}
                 onMove={evt => setViewState(evt.viewState)}
                 mapStyle="mapbox://styles/mapbox/streets-v9"
-                style={{width: "90%", height: "90%"}}
+                style={{width: "100%", height: "100%"}}
                 ref={mapRef}
                 mapboxAccessToken={"pk.eyJ1IjoicXVhbm5ndXllbnN1bW1pdCIsImEiOiJjbGczdjRxb3MwZXEwM2VzYTBmOG53ankwIn0.3Z2bGiao8TQWuEhojfDBfQ"}
             >

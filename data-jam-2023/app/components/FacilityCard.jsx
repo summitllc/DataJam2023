@@ -3,6 +3,7 @@ import CardContent from '@mui/material/CardContent/CardContent';
 import Button from '@mui/material/Button/Button';
 import Typography from '@mui/material/Typography/Typography';
 import CardActions from '@mui/material/CardActions'
+import PreferenceCard from "@/app/components/PreferenceCard";
 
 const FacilityCard = (props) => {
     const {
@@ -16,28 +17,11 @@ const FacilityCard = (props) => {
         setShowWhyDialog,
         setShowConditionDialog
     } = props;
-    const marks = [
-        {
-            value: 1,
-            label: 'Least Important',
-        },
-        {
-            value: 5,
-            label: 'Most Important',
-        },
 
-    ]
     const buttonStyle = {
         width: "25%"
     }
-    const sliderBoxStyle = {
-        width: "50%",
-        border: "#dadade 1px solid",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center"
 
-    }
     return (
         <Paper sx={{
             padding: "2% 4%",
@@ -47,7 +31,7 @@ const FacilityCard = (props) => {
             height: "98%",
             margin: "1% 1%"
         }}>
-            <Typography variant={"h5"} textAlign={"center"}> Our recommended facility:</Typography>
+            <Typography variant={"h5"} textAlign={"center"}> Our Recommended Facilities</Typography>
             <Box sx={{
                 border: "#dadade solid 2px",
                 marginTop: "15px",
@@ -97,7 +81,7 @@ const FacilityCard = (props) => {
             </Box>
             <Box sx={{border: "1px black solid", width: "100%", margin: "2% 0%"}}/>
             <Box>
-                <Typography variant={"h5"} textAlign={"center"}> Personalized Recommendations:</Typography>
+                <Typography variant={"h5"} textAlign={"center"}> My Transit Preferences</Typography>
             </Box>
             <Box sx={{
                 border: "#dadade solid 2px",
@@ -110,66 +94,10 @@ const FacilityCard = (props) => {
                 height: "50%",
                 marginBottom: "5px"
             }}>
-                <Box sx={sliderBoxStyle}>
-                    <Typography>Walk-ability</Typography>
-                    <Slider
-                        sx={{width: "60%"}}
-                        marks={marks}
-                        defaultValue={3}
-                        step={1}
-                        min={1}
-                        max={5}
-                        valueLabelDisplay={"auto"}
-                        onChange={(event) => {
-                            console.log("slide")
-                        }}
-                    />
-                </Box>
-                <Box sx={sliderBoxStyle}>
-                    <Typography>Transit-ability</Typography>
-                    <Slider
-                        sx={{width: "60%"}}
-                        marks={marks}
-                        defaultValue={3}
-                        step={1}
-                        min={1}
-                        max={5}
-                        valueLabelDisplay={"auto"}
-                        onChange={(event) => {
-                            console.log("slide")
-                        }}
-                    />
-                </Box>
-                <Box sx={sliderBoxStyle}>
-                    <Typography>Bike</Typography>
-                    <Slider
-                        sx={{width: "60%"}}
-                        marks={marks}
-                        defaultValue={3}
-                        step={1}
-                        min={1}
-                        max={5}
-                        valueLabelDisplay={"auto"}
-                        onChange={(event) => {
-                            console.log("slide")
-                        }}
-                    />
-                </Box>
-                <Box sx={sliderBoxStyle}>
-                    <Typography>Distance</Typography>
-                    <Slider
-                        sx={{width: "60%"}}
-                        marks={marks}
-                        defaultValue={3}
-                        step={1}
-                        min={1}
-                        max={5}
-                        valueLabelDisplay={"auto"}
-                        onChange={(event) => {
-                            console.log("slide")
-                        }}
-                    />
-                </Box>
+
+                <PreferenceCard title={"Walkability"}/>
+                <PreferenceCard title={"Metro Accessibility"}/>
+                <PreferenceCard title={"Bike Friendly"}/>
             </Box>
         </Paper>
     );
