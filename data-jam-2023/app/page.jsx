@@ -105,8 +105,6 @@ export default function Home() {
                         <Typography
                             variant="h6"
                             noWrap
-                            component="a"
-                            href="/"
                             sx={{
                                 mr: 2,
                                 display: {xs: 'none', md: 'flex'},
@@ -114,10 +112,9 @@ export default function Home() {
                                 fontWeight: 700,
                                 letterSpacing: '.3rem',
                                 color: 'inherit',
-                                textDecoration: 'none',
                             }}
                         >
-                            DATAJAM
+                            <a href="/">DATAJAM</a>    
                         </Typography>
                     </AppBar>
                     {/*Main Content*/}
