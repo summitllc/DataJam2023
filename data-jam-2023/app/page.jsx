@@ -10,7 +10,7 @@ import ConditionDialog from "@/app/components/ConditionDialog";
 import IntroPopUp from "@/app/components/IntroPopUp"
 import LoadingPopUp from "@/app/components/LoadingPopUp"
 import axios from "axios";
-import serviceCode from "@/app/ServiceCode";
+import {serviceCode, dataDictionary} from "@/app/ServiceCode";
 
 export default function Home() {
 
@@ -21,7 +21,6 @@ export default function Home() {
     const [showConditionDialog, setShowConditionDialog] = useState(false);
     const [coordinates, setCoordinates] = useState(null);
     const [facilitiesData, setFacilitiesData] = useState(null)
-    const [rawFacilityData, setRawFacilityData] = useState(null)
     const [filterObject, setFilterObject] = useState({
         "Languages": [],
         "Payment Options": [],
@@ -36,7 +35,7 @@ export default function Home() {
     });
     const [radius, setRadius] = useState(5);
 
-    const [silder, setSlider] = useState({
+    const [slider, setSlider] = useState({
         walkScore: 1,
         bikeScore: 1,
         transitScore: 1
@@ -58,20 +57,25 @@ export default function Home() {
         })
     }
 
+    const valueOrZero = (value) => {
+        if (value === "None") return 0
+        return value
+    }
     const generateScore = (userScore, facilityScore) => {
-        const bikeScore = (userScore.bikeScore + facilityScore.bikeScore) / 2
-        const transitScore = (userScore.transitScore + facilityScore.transitScore) / 2
-        const walkScore = (userScore.walkScore + facilityScore.walkScore) / 2
+        const bikeScore = (valueOrZero(userScore.bikeScore) + valueOrZero(facilityScore.bikeScore)) / 2
+        const transitScore = (valueOrZero(userScore.transitScore) + valueOrZero(facilityScore.transitScore)) / 2
+        const walkScore = (valueOrZero(userScore.walkScore) + valueOrZero(facilityScore.walkScore)) / 2
         return {bikeScore, transitScore, walkScore}
     }
 
     const processFacilityData = (userScore, facilityData) => {
         const {name, coor, walkScore, transitScore, bikeScore, phone, address, website} = facilityData
-        setRawFacilityData(facilityData)
         const scores = generateScore(userScore, {bikeScore, walkScore, transitScore})
         const total = scores.transitScore + scores.walkScore + scores.bikeScore
         return {
-            name, coor, phone, address, website, scores, total
+            name, coor, phone, address, website, scores, total, rawScore: {
+                walkScore, transitScore, bikeScore
+            }
         }
     }
 
@@ -84,31 +88,33 @@ export default function Home() {
         const range = radius
         const long = location.x
         const lat = location.y
-        let codes = ["IDD",
-            "TELE",
-            "MD"]
-        // const keys = Object.keys(filterObject)
-        // keys.map((key) => {
-        //     const temp = filterObject[key].map((value) => (
-        //         serviceCode[0][key][value]
-        //     ))
-        //     codes = [...codes, ...temp]
-        // })
+        let codes = []
+        const keys = Object.keys(filterObject)
+        keys.map((key) => {
+            const temp = filterObject[key].map((value) => {
+                return dataDictionary[key][value]
+            })
+            codes = [...codes, ...temp]
+        })
         const {data} = await fetchFacilityData(address, long, lat, range, codes)
         const userScore = JSON.parse(data.result.userScores)
         let facilityData = JSON.parse(data.result.facilityData)
         facilityData = facilityData.map((facility) => (
             processFacilityData(userScore, facility))
         )
-
         facilityData.sort((a, b) => b.total - a.total)
         setFacilitiesData(facilityData)
-
-        setViewState({
-            longtitude: location.x,
-            latitude: location.y,
-            zoom: 13
+        setSlider({
+            walkScore: 1,
+            bikeScore: 1,
+            transitScore: 1
         })
+
+        // setViewState({
+        //     longtitude: location.x,
+        //     latitude: location.y,
+        //     zoom: 13
+        // })
         setLoading(false);
     }
 
@@ -120,27 +126,31 @@ export default function Home() {
 
     useEffect(() => {
         if (facilitiesData) {
-            const totalWeight = silder.bikeScore + silder.walkScore + silder.transitScore
-            const bikeWeight = silder.bikeScore / totalWeight;
-            const walkWeight = silder.walkScore / totalWeight;
-            const transitWeight = silder.transitScore / totalWeight;
-            const temp = [...facilitiesData]
-            temp.map((facility) => (
-                {
-                    ...facility,
-                    scores: {
-                        walkScore: walkWeight * scores.walkScore,
-                        bikeScore: bikeWeight * scores.bikeScore,
-                        transitScore: transitWeight * scores.transitScore,
-                    },
-                    total: walkWeight * scores.walkScore + bikeWeight * scores.bikeScore + transitWeight * scores.transitScore
+            const totalWeight = slider.bikeScore + slider.walkScore + slider.transitScore
+            const bikeWeight = slider.bikeScore / totalWeight;
+            const walkWeight = slider.walkScore / totalWeight;
+            const transitWeight = slider.transitScore / totalWeight;
+            let temp = [...facilitiesData]
+            temp = temp.map((facility) => {
+                    const walkScore = walkWeight * facility.scores.walkScore
+                    const transitScore = transitWeight * facility.scores.transitScore
+                    const bikeScore = bikeWeight * facility.scores.bikeScore
+                    return {
+                        ...facility,
+                        scores: {
+                            walkScore,
+                            bikeScore,
+                            transitScore,
+                        },
+                        total: walkScore + transitScore + bikeScore
+                    }
                 }
-            ))
+            )
             temp.sort((a, b) => b.total - a.total)
-            setFacilitiesData(facilityData)
+            setFacilitiesData(temp)
         }
 
-    }, [silder])
+    }, [slider])
 
     const handlePopUpClose = () => {
         localStorage.setItem('alreadyAccessedWebsite', true);
@@ -196,6 +206,7 @@ export default function Home() {
                                 facilitiesData={facilitiesData}
                                 currentIndex={currentIndex}
                                 setCurrentIndex={setCurrentIndex}
+                                slider={slider}
                             />
                         </Box>
                     </Box>

@@ -8,7 +8,7 @@ const FacilityCard = (props) => {
     const {
         facilitiesData,
         setShowWhyDialog,
-        currentIndex, setCurrentIndex
+        currentIndex, setCurrentIndex, setSlider, slider
     } = props;
 
     const buttonStyle = {
@@ -112,9 +112,9 @@ const FacilityCard = (props) => {
                 marginBottom: "5px"
             }}>
 
-                <PreferenceCard title={"Walkability"} name={""}/>
-                <PreferenceCard title={"Metro Accessibility"}/>
-                <PreferenceCard title={"Bike Friendly"}/>
+                <PreferenceCard title={"Walkability"} name={"walkScore"} setSlider={setSlider} slider={slider}/>
+                <PreferenceCard title={"Metro Accessibility"} name={"bikeScore"} setSlider={setSlider} slider={slider}/>
+                <PreferenceCard title={"Bike Friendly"} name={"transitScore"} setSlider={setSlider} slider={slider}/>
             </Box>
         </Paper>
     );
