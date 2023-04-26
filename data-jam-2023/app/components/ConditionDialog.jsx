@@ -19,7 +19,7 @@ const ConditionDialog = (props) => {
             return {...prev, [label]: value}
         })
     }
-    
+
     return (
         <Dialog open={showConditionDialog} fullWidth={true} maxWidth={"md"}>
             <DialogTitle>
@@ -43,10 +43,9 @@ const ConditionDialog = (props) => {
                             multiple
                             value={filterObject[label[0]]}
                             id="tags-outlined"
-                            onChange={(event, value) => {
-                                handleAutoCompleteChange(event, value, label[0])
+                            onChange={(event, newValue) => {
+                                handleAutoCompleteChange(event, newValue, label[0])
                             }}
-                            value={filterObject[label]}
                             options={options}
                             getOptionLabel={(option) => option}
                             filterSelectedOptions

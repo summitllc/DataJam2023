@@ -16,13 +16,12 @@ export async function GET(request) {
                 address, latitude, longitude, range, codes
             }
         })
-        console.log("data", data)
         const result = data.data;
         const error = data.error
         if (error) throw new Error(error)
         return NextResponse.json({result}, {status: 200})
     } catch (error) {
-        console.log("errored", error)
+        console.log(error)
         return NextResponse.json({error: error.message}, {status: 500})
     }
 }
