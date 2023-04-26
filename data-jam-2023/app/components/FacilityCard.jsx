@@ -8,13 +8,12 @@ const FacilityCard = (props) => {
     const {
         facilitiesData,
         setShowWhyDialog,
+        currentIndex, setCurrentIndex
     } = props;
 
     const buttonStyle = {
         width: "25%"
     }
-
-    const [currentIndex, setCurrentIndex] = useState(0)
 
 
     const handlePrevious = () => {
@@ -34,7 +33,7 @@ const FacilityCard = (props) => {
             height: "98%",
             margin: "1% 1%"
         }}>
-            <Typography variant={"h5"} textAlign={"center"}> Our Recommended Facilities</Typography>
+            <Typography variant={"h5"} textAlign={"center"}>Recommended Facilities</Typography>
             {facilitiesData ? <Box sx={{
                     border: "#dadade solid 2px",
                     marginTop: "15px",

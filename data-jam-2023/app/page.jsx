@@ -34,6 +34,8 @@ export default function Home() {
     });
     const [radius, setRadius] = useState(5);
 
+    const [currentIndex, setCurrentIndex] = useState(0)
+
     const fetchFacilityData = async (address, long, lat, range, codes) => {
         const baseURL = "/api/facilities"
         return await axios.get(baseURL, {
@@ -77,6 +79,7 @@ export default function Home() {
         const {data} = await fetchFacilityData(address, long, lat, range, codes)
         const userScore = JSON.parse(data.result.userScores)
         let facilityData = JSON.parse(data.result.facilityData)
+        console.log(facilityData)
         facilityData = facilityData.map((facility) => (
             processFacilityData(userScore, facility))
         )
@@ -141,12 +144,16 @@ export default function Home() {
                                 setRadius={setRadius}
                                 setShowConditionDialog={setShowConditionDialog}
                                 addressData={addressData}
+                                facilitiesData={facilitiesData}
+                                currentIndex={currentIndex}
                             />
                         </Box>
                         <Box sx={{width: "50%", height: "95vh"}}>
                             <FacilityCard
                                 setShowWhyDialog={setShowWhyDialog}
                                 facilitiesData={facilitiesData}
+                                currentIndex={currentIndex}
+                                setCurrentIndex={setCurrentIndex}
                             />
                         </Box>
                     </Box>
