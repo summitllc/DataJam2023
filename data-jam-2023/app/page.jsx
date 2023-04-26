@@ -63,6 +63,7 @@ export default function Home() {
     }
     const generateScore = (userScore, facilityScore) => {
         const bikeScore = (valueOrZero(userScore.bikeScore) + valueOrZero(facilityScore.bikeScore)) / 2
+        console.log(bikeScore)
         const transitScore = (valueOrZero(userScore.transitScore) + valueOrZero(facilityScore.transitScore)) / 2
         const walkScore = (valueOrZero(userScore.walkScore) + valueOrZero(facilityScore.walkScore)) / 2
         return {bikeScore, transitScore, walkScore}
@@ -96,6 +97,7 @@ export default function Home() {
             })
             codes = [...codes, ...temp]
         })
+        if (codes.length === 0) codes = [""]
         const {data} = await fetchFacilityData(address, long, lat, range, codes)
         const userScore = JSON.parse(data.result.userScores)
         let facilityData = JSON.parse(data.result.facilityData)
@@ -218,10 +220,12 @@ export default function Home() {
                             addressData={addressData}
                         />
                     }
-                    <WhyDialog
+                    {facilitiesData ? <WhyDialog
                         setShowWhyDialog={setShowWhyDialog}
                         showWhyDialog={showWhyDialog}
-                    />
+                        facilitiesData={facilitiesData[currentIndex]}
+                    /> : <></>}
+
                     <ConditionDialog
                         setShowConditionDialog={setShowConditionDialog}
                         showConditionDialog={showConditionDialog}
