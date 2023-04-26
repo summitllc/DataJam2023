@@ -117,7 +117,7 @@ export default function Home() {
                         color: 'inherit',
                         }}
                     >
-                        <a href="/">DATAJAM</a>
+                        <a href="/">Mental Health Treatment in DC - Maryland - Virginia (DMV)</a>
                         <div style={{ display: 'flex', alignItems: 'center'}}>
                             <a href="https://github.com/summitllc/DataJam2023" target="_blank">
                                 <Image src="/githublogo.png" alt="GitHub Logo" width={30} height={30} style={{ marginTop: '7px', marginRight: '10px' }} />
