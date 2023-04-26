@@ -6,19 +6,18 @@ export async function GET(request) {
     try {
         const baseURL = "https://xzobjj8thb.execute-api.us-east-1.amazonaws.com/test/fetch-data"
         const address = searchParams.get("address")
-        const lat = searchParams.get("lat")
-        const long = searchParams.get("long")
+        const latitude = searchParams.get("latitude")
+        const longitude = searchParams.get("longitude")
         const range = searchParams.get("range")
         const codes = searchParams.get("codes")
 
-        console.log("get")
-
         const data = await axios.get(baseURL, {
             params: {
-                address, lat, long, range, codes
+                address, latitude, longitude, range, codes
             }
         })
-        const result = data.data.result;
+        console.log("data", data)
+        const result = data.data;
         const error = data.error
         if (error) throw new Error(error)
         return NextResponse.json({result}, {status: 200})

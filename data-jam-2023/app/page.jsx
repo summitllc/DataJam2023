@@ -21,6 +21,7 @@ export default function Home() {
     const [showConditionDialog, setShowConditionDialog] = useState(false);
     const [coordinates, setCoordinates] = useState(null);
     const [facilitiesData, setFacilitiesData] = useState([])
+    const [userScore, setUserScore] = useState({})
     const [filterObject, setFilterObject] = useState({
         "languages": [],
         "Payment Options": [],
@@ -41,17 +42,17 @@ export default function Home() {
         return await axios.get(baseURL, {
             params: {
                 address: address,
-                long: long,
-                lat: lat,
+                longitude: long,
+                latitude: lat,
                 range: range,
-                codes: codes
+                codes: `${codes.toString()}`
             }
         })
     }
 
     const handleConfirm = async () => {
         // Uncomment setLoading functions once the API for fetchingFacilityData is working.
-        // setLoading(true);
+        setLoading(true);
         const location = addressData.result.addressMatches[0].coordinates
         setShowConfirmAddress(false);
         setCoordinates(location)
@@ -61,14 +62,16 @@ export default function Home() {
         const lat = location.y
         const codes = ["IDD", "TELE", "MD"]
 
-        const data = await fetchFacilityData(address, long, lat, range, codes)
-        // setLoading(false);
+        const {data} = await fetchFacilityData(address, long, lat, range, codes)
+        setFacilitiesData(JSON.parse(data.result.facilityData))
+        setUserScore(JSON.parse(data.result.userScores))
 
         setViewState({
             longtitude: location.x,
             latitude: location.y,
             zoom: 13
         })
+        setLoading(false);
     }
 
     const handlePrevious = () => {
@@ -92,7 +95,7 @@ export default function Home() {
         setAlreadyAccessedWebsite(true);
     };
 
-    const [showLoading, setLoading ] = useState(false);
+    const [showLoading, setLoading] = useState(false);
 
     return (
         <Paper sx={{backgroundColor: "#dadade"}}>
@@ -171,7 +174,9 @@ export default function Home() {
                     />
                     <LoadingPopUp
                         open={showLoading}
-                        close={!showLoading}
+                        close={() => {
+                            setLoading(false)
+                        }}
                     />
                 </Box>
             </Box>
