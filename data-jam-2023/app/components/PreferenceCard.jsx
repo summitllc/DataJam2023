@@ -2,6 +2,7 @@ import Typography from "@mui/material/Typography/Typography";
 import {Box, Slider} from "@mui/material";
 
 const PreferenceCard = (props) => {
+    const {setSlider, name, slider} = props
     const marks = [
         {
             value: 1,
@@ -70,9 +71,15 @@ const PreferenceCard = (props) => {
                     step={1}
                     min={1}
                     max={10}
+                    value={slider[name]}
                     valueLabelDisplay={"auto"}
-                    onChange={(event) => {
-                        console.log("slide")
+                    onChange={(event, value) => {
+                        setSlider((prevState) => (
+                            {
+                                ...prevState,
+                                [name]: value
+                            }
+                        ))
                     }}
                 />
                 <Typography sx={{fontSize: "0.9rem", textAlign: "center"}}>Most

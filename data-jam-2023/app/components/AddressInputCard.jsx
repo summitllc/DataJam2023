@@ -17,13 +17,9 @@ const AddressInputCard = (props) => {
         setViewState,
         viewState,
         setRadius,
-        setShowConditionDialog, addressData
+        setShowConditionDialog, addressData, facilitiesData, currentIndex
     } = props
     const [address, setAddress] = useState("");
-    const [placeHolderCoor, setPlaceHolderCoor] = useState([
-        [-77.0110598, 38.9082416],
-        [-77.0246933, 38.9116931]
-    ])
     const [error, setError] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
     const mapRef = useRef();
@@ -77,7 +73,6 @@ const AddressInputCard = (props) => {
         const userAddressData = await fetchAddressData();
         setLoading(false);
         if (userAddressData) {
-            console.log(userAddressData)
             setAddressData(userAddressData.data)
             setShowConfirmAddress(true);
             return
@@ -85,18 +80,36 @@ const AddressInputCard = (props) => {
         setError("Failed to fetch address")
     }
 
+    const markerColor = (index) => {
+        if (index === currentIndex) return "green"
+        return "red"
+    }
+
     useEffect(() => {
-        if (coordinates !== null) {
-            const temp = [...placeHolderCoor, [coordinates.x, coordinates.y]]
+        if (coordinates !== null && facilitiesData !== null) {
+            const coordinatesList = facilitiesData.map((facilitiesData) => facilitiesData.coor)
+            const temp = [...coordinatesList, [coordinates.x, coordinates.y]]
             const bounds = findBound(temp)
-            console.log(bounds)
             mapRef.current.fitBounds([
                 [bounds.minLng - 0.03, bounds.minLat - 0.03],
                 [bounds.maxLng + 0.03, bounds.maxLat + 0.03],
                 {padding: 40}
             ])
         }
-    }, [coordinates, placeHolderCoor, mapRef])
+    }, [coordinates, facilitiesData, mapRef])
+
+    useEffect(() => {
+        if (coordinates !== null && facilitiesData !== null) {
+            const coordinatesList = facilitiesData.map((facilitiesData) => facilitiesData.coor)
+            const temp = [coordinatesList[currentIndex], [coordinates.x, coordinates.y]]
+            const bounds = findBound(temp)
+            mapRef.current.fitBounds([
+                [bounds.minLng - 0.03, bounds.minLat - 0.03],
+                [bounds.maxLng + 0.03, bounds.maxLat + 0.03],
+                {padding: 40}
+            ])
+        }
+    }, [coordinates, currentIndex])
 
     return (
         <Paper sx={{
@@ -161,7 +174,6 @@ const AddressInputCard = (props) => {
                 <NavigationControl showCompass={false}/>
                 {coordinates &&
                     <Marker longitude={coordinates.x} latitude={coordinates.y} anchor="bottom" onClick={(event) => {
-                        console.log("clicked")
                         setShowPopup((prevState) => (
                             !prevState
                         ))
@@ -185,10 +197,10 @@ const AddressInputCard = (props) => {
                     <></>
                 }
 
-                {placeHolderCoor.map((coor) => {
+                {facilitiesData?.map((facility) => facility.coor).map((coor, index) => {
                     return (
                         <Marker key={coor} longitude={coor[0]} latitude={coor[1]} anchor="bottom">
-                            <PersonPinCircleIcon sx={{color: "red"}}/>
+                            <PersonPinCircleIcon sx={{color: markerColor(index)}}/>
                         </Marker>
                     )
                 })}
