@@ -101,7 +101,7 @@ export default function Home() {
         <Paper sx={{backgroundColor: "#dadade"}}>
             <Box sx={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minHeight: '100vh'}}>
                 <Box sx={{flexGrow: 1}}>
-                    <AppBar position="static" sx={{padding: "10px 15px", height: "5vh"}}>
+                    <AppBar position="static" sx={{padding: "10px 15px", height: "6vh"}}>
                         <Typography
                             variant="h6"
                             noWrap
@@ -176,6 +176,22 @@ export default function Home() {
                         }}
                     />
                 </Box>
+                <AppBar position="absolute" sx={{top: "auto", bottom: -60, padding: "10px 15px", height: "6vh"}}>
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        sx={{
+                            mr: 2,
+                            display: {xs: 'none', md: 'flex'},
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit'
+                        }}
+                    >
+                        <p>Summit Consulting, LLC (c) 2023 </p>   
+                    </Typography>
+                </AppBar>
             </Box>
         </Paper>
     )
