@@ -40,7 +40,7 @@ const WhyDialog = (props) => {
 
                 <Button onClick={() => {
                     setShowWhyDialog(false)
-                }}>Okay</Button>
+                }}>Ok</Button>
             </DialogContent>
         </Dialog>
     )
