@@ -77,7 +77,6 @@ const AddressInputCard = (props) => {
         const userAddressData = await fetchAddressData();
         setLoading(false);
         if (userAddressData) {
-            console.log(userAddressData)
             setAddressData(userAddressData.data)
             setShowConfirmAddress(true);
             return
@@ -89,7 +88,6 @@ const AddressInputCard = (props) => {
         if (coordinates !== null) {
             const temp = [...placeHolderCoor, [coordinates.x, coordinates.y]]
             const bounds = findBound(temp)
-            console.log(bounds)
             mapRef.current.fitBounds([
                 [bounds.minLng - 0.03, bounds.minLat - 0.03],
                 [bounds.maxLng + 0.03, bounds.maxLat + 0.03],
@@ -161,7 +159,6 @@ const AddressInputCard = (props) => {
                 <NavigationControl showCompass={false}/>
                 {coordinates &&
                     <Marker longitude={coordinates.x} latitude={coordinates.y} anchor="bottom" onClick={(event) => {
-                        console.log("clicked")
                         setShowPopup((prevState) => (
                             !prevState
                         ))
