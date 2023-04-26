@@ -11,6 +11,7 @@ import ConditionDialog from "@/app/components/ConditionDialog";
 import IntroPopUp from "@/app/components/IntroPopUp"
 import LoadingPopUp from "@/app/components/LoadingPopUp"
 import axios from "axios";
+import Image from 'next/image';
 
 export default function Home() {
 
@@ -101,22 +102,32 @@ export default function Home() {
         <Paper sx={{backgroundColor: "#dadade"}}>
             <Box sx={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minHeight: '100vh'}}>
                 <Box sx={{flexGrow: 1}}>
-                    <AppBar position="static" sx={{padding: "10px 15px", height: "6vh"}}>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            sx={{
-                                mr: 2,
-                                display: {xs: 'none', md: 'flex'},
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                            }}
-                        >
-                            <a href="/">DATAJAM</a>    
-                        </Typography>
-                    </AppBar>
+                <AppBar position="static" sx={{padding: "10px 15px", height: "6vh", display: 'flex'}}>
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        sx={{
+                        flexGrow: 1,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        fontFamily: 'monospace',
+                        fontWeight: 700,
+                        letterSpacing: '.3rem',
+                        color: 'inherit',
+                        }}
+                    >
+                        <a href="/">DATAJAM</a>
+                        <div style={{ display: 'flex', alignItems: 'center'}}>
+                            <a href="https://github.com/summitllc/DataJam2023" target="_blank">
+                                <Image src="/githublogo.png" alt="GitHub Logo" width={30} height={30} style={{ marginTop: '7px', marginRight: '10px' }} />
+                            </a>
+                            <a href="https://www.summitllc.us/" target="_blank">
+                                <Image src="/summitlogo.png" alt="Summit Logo" width={25} height={25} style={{ marginTop: '7px' }}/>
+                            </a>
+                        </div>
+                    </Typography>
+                </AppBar>
                     {/*Main Content*/}
                     <Box sx={{width: "100%", display: "flex"}}>
                         <Box sx={{width: "50%", height: "95vh"}}>
