@@ -120,10 +120,10 @@ export default function Home() {
                         <a href="/">Mental Health Treatment in DC - Maryland - Virginia (DMV)</a>
                         <div style={{ display: 'flex', alignItems: 'center'}}>
                             <a href="https://github.com/summitllc/DataJam2023" target="_blank">
-                                <Image src="/githublogo.png" alt="GitHub Logo" width={30} height={30} style={{ marginTop: '7px', marginRight: '10px' }} />
+                                <Image src="/githublogo.png" alt="GitHub Logo" width={26} height={26} style={{ marginTop: '8px', marginRight: '10px' }} />
                             </a>
                             <a href="https://www.summitllc.us/" target="_blank">
-                                <Image src="/summitlogo.png" alt="Summit Logo" width={25} height={25} style={{ marginTop: '7px' }}/>
+                                <Image src="/summitlogo.png" alt="Summit Logo" width={22} height={22} style={{ marginTop: '8px' }}/>
                             </a>
                         </div>
                     </Typography>
