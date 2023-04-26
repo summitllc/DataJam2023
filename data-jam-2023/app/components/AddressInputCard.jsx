@@ -87,7 +87,6 @@ const AddressInputCard = (props) => {
 
     useEffect(() => {
         if (coordinates !== null && facilitiesData !== null) {
-            console.log(coordinates)
             const coordinatesList = facilitiesData.map((facilitiesData) => facilitiesData.coor)
             const temp = [...coordinatesList, [coordinates.x, coordinates.y]]
             const bounds = findBound(temp)

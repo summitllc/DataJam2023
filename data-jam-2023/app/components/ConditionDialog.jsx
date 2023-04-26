@@ -9,7 +9,7 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import serviceCode from "@/app/ServiceCode";
+import {serviceCode} from "@/app/ServiceCode";
 import {createRef, useEffect, useRef} from "react";
 
 const ConditionDialog = (props) => {
