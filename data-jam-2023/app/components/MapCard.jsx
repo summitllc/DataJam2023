@@ -14,7 +14,9 @@ const MapCard = (props) => {
         coordinates,
         setViewState,
         viewState,
-        addressData, facilitiesData, currentIndex
+        addressData,
+        facilitiesData,
+        currentIndex, setShowGuidance, setStep
     } = props
     const [showPopup, setShowPopup] = useState(false);
     const [currentFacilityInfo, setCurrentFacilityInfo] = useState(null);
@@ -82,7 +84,13 @@ const MapCard = (props) => {
             height: "98%",
             margin: "1% 1%"
         }}>
-
+            <Button sx={{backgroundColor: "green", width: "30%", alignSelf: "center"}} variant={"contained"}
+                    onClick={() => {
+                        setStep(1)
+                        setShowGuidance(true)
+                    }}>
+                Re-Search
+            </Button>
 
             <Map
                 {...viewState}

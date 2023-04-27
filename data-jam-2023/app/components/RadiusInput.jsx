@@ -22,10 +22,9 @@ const RadiusInput = (props) => {
     ]
     return (
         <Box sx={{display: "flex", marginBottom: "10px", flexDirection: "column", alignItems: "center"}}>
-            <Box sx={{width: "100%", display: "flex", paddingTop: "5px", marginBottom: "10px"}}>
-                <Typography> Distance: {"    "}</Typography>
+            <Box sx={{width: "100%", display: "flex", marginBottom: "10px", justifyContent: "center"}}>
                 <Slider
-                    sx={{width: "60%", color: "green"}}
+                    sx={{width: "60%", color: "green", marginTop: "30px"}}
                     marks={marks}
                     defaultValue={5}
                     step={1}

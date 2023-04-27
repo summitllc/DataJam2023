@@ -11,7 +11,6 @@ import AddressInput from "@/app/components/AddressInput";
 import RadiusInput from "@/app/components/RadiusInput";
 
 const UserGuidance = (props) => {
-    const [step, setStep] = useState(0)
     const {
         handlePopUpClose,
         open,
@@ -21,7 +20,7 @@ const UserGuidance = (props) => {
         address,
         setAddress,
         setRadius,
-        handleConfirm
+        handleConfirm, step, setStep
     } = props
     const title = {
         2: "Filter Facilities",

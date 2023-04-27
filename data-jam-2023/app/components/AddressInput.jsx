@@ -31,7 +31,7 @@ const AddressInput = (props) => {
         if (userAddressData) {
             setAddressData(userAddressData.data)
         }
-        setStep(3)
+        setStep((prev) => (prev + 1))
     }
     return (
         <Box sx={{display: "flex", justifyContent: "center", flexWrap: "wrap", alignItems: "center"}}>
@@ -73,7 +73,7 @@ const AddressInput = (props) => {
                         onClick={() => {
                             setStep((step) => (step - 1))
                         }}
-                        disabled={loading}
+                        disabled={true}
                     >
                         Previous
                     </Button>

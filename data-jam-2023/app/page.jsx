@@ -17,10 +17,10 @@ export default function Home() {
     const [addressData, setAddressData] = useState(null);
     const [address, setAddress] = useState("");
     const [showWhyDialog, setShowWhyDialog] = useState(false);
-    const [showConditionDialog, setShowConditionDialog] = useState(false);
     const [coordinates, setCoordinates] = useState(null);
     const [facilitiesData, setFacilitiesData] = useState(null)
     const [userScore, setUserScore] = useState(null)
+    const [step, setStep] = useState(0)
     const [filterObject, setFilterObject] = useState({
         "Languages": [],
         "Payment Options": [],
@@ -228,16 +228,13 @@ export default function Home() {
                         <Box sx={{width: "100%", display: "flex"}}>
                             <Box sx={{width: "60%", height: "95vh"}}>
                                 <MapCard
-                                    setLoading={setLoading}
-                                    setAddressData={setAddressData}
                                     coordinates={coordinates}
                                     viewState={viewState}
                                     setViewState={setViewState}
-                                    setRadius={setRadius}
-                                    setShowConditionDialog={setShowConditionDialog}
-                                    addressData={addressData}
                                     facilitiesData={facilitiesData}
                                     currentIndex={currentIndex}
+                                    setShowGuidance={setAlreadyAccessedWebsite}
+                                    setStep={setStep}
                                 />
                             </Box>
                             <Box sx={{width: "40%", height: "95vh"}}>
@@ -267,6 +264,8 @@ export default function Home() {
                             setAddress={setAddress}
                             setRadius={setRadius}
                             handleConfirm={handleConfirm}
+                            step={step}
+                            setStep={setStep}
                         />
                         <LoadingPopUp
                             open={showLoading}
