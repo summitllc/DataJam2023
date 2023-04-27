@@ -33,8 +33,9 @@ const TabPanel = (props) => {
     );
 }
 
+
 const WhyDialog = (props) => {
-    const {showWhyDialog, setShowWhyDialog, facilitiesData} = props
+    const {showWhyDialog, setShowWhyDialog, facilitiesData, userScore} = props
     const [value, setValue] = useState(0);
 
     const handleChange = (event, newValue) => {
@@ -72,9 +73,10 @@ const WhyDialog = (props) => {
                     <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                             <Tab label={
-                                "Default Score"
+                                "Facility Score"
                             }/>
-                            <Tab label="Personalized Score"/>
+                            <Tab label="User Score"/>
+                            <Tab label="Overall Score"/>
                         </Tabs>
                     </Box>
                     <TabPanel value={value} index={0}>
@@ -89,28 +91,36 @@ const WhyDialog = (props) => {
                             Walk Score: {facilitiesData.rawScore.walkScore}
                         </Typography>
                         <Typography>
-                            Bike Score: {facilitiesData.rawScore.bikeScore}
+                            Transit Score: {facilitiesData.rawScore.transitScore}
                         </Typography>
                         <Typography>
-                            Metro Score: {facilitiesData.rawScore.transitScore}
+                            Bike Score: {facilitiesData.rawScore.bikeScore}
                         </Typography>
+
                     </TabPanel>
                     <TabPanel value={value} index={1}>
                         <Typography>
-                            These scores are derived from <span><Link
+                            These scores are from <span><Link
                             href="https://www.walkscore.com/how-it-works/"
                             target={"_blank"}>
                                 Walk Score®
                             </Link></span>
                         </Typography>
                         <Typography>
-                            Walk Score: {formatPersonalScore(facilitiesData.scores.walkScore)}
+                            Walk Score: {userScore.walkScore}
+                        </Typography>
+
+                        <Typography>
+                            Transit Score: {userScore.transitScore}
                         </Typography>
                         <Typography>
-                            Bike Score: {formatPersonalScore(facilitiesData.scores.bikeScore)}
+                            Bike Score: {userScore.bikeScore}
                         </Typography>
+                    </TabPanel>
+                    <TabPanel value={value} index={2}>
+                        <Typography> This score is used for the ranking of the facilities.</Typography>
                         <Typography>
-                            Metro Score: {formatPersonalScore(facilitiesData.scores.transitScore)}
+                            Overall Score: {Math.floor(facilitiesData.total)}
                         </Typography>
                     </TabPanel>
                 </Box>
