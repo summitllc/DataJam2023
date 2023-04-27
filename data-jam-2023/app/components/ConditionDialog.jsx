@@ -14,14 +14,9 @@ import {createRef, useEffect, useRef} from "react";
 
 const ConditionDialog = (props) => {
     const {showConditionDialog, setShowConditionDialog, setFilterObject, filterObject} = props
-    const handleAutoCompleteChange = (event, value, label) => {
-        setFilterObject((prev) => {
-            return {...prev, [label]: value}
-        })
-    }
 
     return (
-        <Dialog open={showConditionDialog} fullWidth={true} maxWidth={"md"}>
+        <Dialog open={showConditionDialog} fullWidth={true} maxWidth={"sm"}>
             <DialogTitle>
                 Select Filter(s)
             </DialogTitle>
@@ -33,33 +28,6 @@ const ConditionDialog = (props) => {
                     minHeight: "50vh"
                 }}
             >
-                {serviceCode.map((serviceObject, index) => {
-                    const label = Object.keys(serviceObject)
-                    const options = Object.keys(serviceObject[label[0]])
-                    return (
-                        <Autocomplete
-                            sx={{margin: "15px 0px"}}
-                            key={label[0]}
-                            multiple
-                            value={filterObject[label[0]]}
-                            id="tags-outlined"
-                            onChange={(event, newValue) => {
-                                handleAutoCompleteChange(event, newValue, label[0])
-                            }}
-                            options={options}
-                            getOptionLabel={(option) => option}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    key={label[0]}
-                                    label={label[0]}
-                                    placeholder={label[0]}
-                                />
-                            )}
-                        />
-                    )
-                })}
 
                 <Button onClick={() => {
                     setShowConditionDialog(false)

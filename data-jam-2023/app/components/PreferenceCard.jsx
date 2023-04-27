@@ -68,7 +68,7 @@ const PreferenceCard = (props) => {
                     sx={{width: "70%"}}
                     marks={marks}
                     defaultValue={3}
-                    step={1}
+                    step={0.5}
                     min={1}
                     max={10}
                     value={slider[name]}

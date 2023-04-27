@@ -9,52 +9,17 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import Button from "@mui/material/Button/Button";
 import Pin from "@/app/components/Icon";
 
-const AddressInputCard = (props) => {
+const MapCard = (props) => {
     const {
-        setLoading,
         coordinates,
-        setShowConfirmAddress,
-        setAddressData,
         setViewState,
         viewState,
-        setRadius,
-        setShowConditionDialog, addressData, facilitiesData, currentIndex
+        addressData, facilitiesData, currentIndex
     } = props
-    const [address, setAddress] = useState("");
-    const [error, setError] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
     const [currentFacilityInfo, setCurrentFacilityInfo] = useState(null);
     const [facilityCoorList, setFacilityCoorList] = useState([])
     const mapRef = useRef();
-
-    const marks = [
-        {
-            value: 5,
-            label: '5 Miles',
-        },
-        {
-            value: 25,
-            label: '25 Miles',
-        },
-        {
-            value: 50,
-            label: '50 Miles',
-        },
-        {
-            value: 100,
-            label: '100 Miles',
-        },
-    ]
-    const fetchAddressData = async () => {
-        const baseURL = "/api/address"
-        return await axios.get(baseURL, {
-            params: {
-                address: address,
-                benchmark: "2020",
-                format: "json",
-            }
-        })
-    }
 
     const findBound = (coordinates) => {
         return coordinates.reduce((acc, [lng, lat]) => {
@@ -70,18 +35,6 @@ const AddressInputCard = (props) => {
             maxLng: Number.NEGATIVE_INFINITY
         });
     };
-
-    const handleAddressSubmit = async () => {
-        setLoading(true);
-        const userAddressData = await fetchAddressData();
-        setLoading(false);
-        if (userAddressData) {
-            setAddressData(userAddressData.data)
-            setShowConfirmAddress(true);
-            return
-        }
-        setError("Failed to fetch address")
-    }
 
     const markerColor = (index) => {
         if (index === currentIndex) return "green"
@@ -129,48 +82,7 @@ const AddressInputCard = (props) => {
             height: "98%",
             margin: "1% 1%"
         }}>
-            <Box sx={{display: "flex", alignItems: "baseline", justifyContent: "space-between"}}>
-                <TextField
-                    id="outlined-basic"
-                    label="Address"
-                    variant="outlined"
-                    sx={{margin: "10px 0px", width: "600px"}}
-                    onChange={(input) => {
-                        setAddress(input.target.value)
-                    }}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton onClick={handleAddressSubmit}>
-                                    <SearchIcon/>
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-                <Box>
-                    <Button variant={"outlined"} onClick={() => {
-                        setShowConditionDialog(true)
-                    }}>
-                        <Typography>Filter Facilities</Typography>
-                    </Button>
-                </Box>
-            </Box>
 
-            <Box sx={{display: "flex", marginBottom: "10px"}}>
-                <Typography> Distance: {"    "}</Typography>
-                <Slider
-                    sx={{width: "60%"}}
-                    marks={marks}
-                    defaultValue={5}
-                    step={1}
-                    max={50}
-                    valueLabelDisplay={"auto"}
-                    onChange={(event) => {
-                        setRadius(event.target.value)
-                    }}
-                />
-            </Box>
 
             <Map
                 {...viewState}
@@ -248,4 +160,4 @@ const AddressInputCard = (props) => {
     )
 }
 
-export default AddressInputCard;
+export default MapCard;
