@@ -1,5 +1,5 @@
 import {serviceCode} from "../ServiceCode";
-import {Autocomplete, Box, TextField} from "@mui/material";
+import {Autocomplete, Box, Button, TextField} from "@mui/material";
 
 const FilterInput = (props) => {
     const {filterObject, setFilterObject, setStep} = props
@@ -40,7 +40,8 @@ const FilterInput = (props) => {
             })}
             <Box>
                 <Button
-                    variant={"outlined"}
+                    variant={"contained"}
+                    sx={{backgroundColor: "green"}}
                     onClick={() => {
                         setStep((step) => (step - 1))
                     }}
@@ -48,7 +49,8 @@ const FilterInput = (props) => {
                     Previous
                 </Button>
                 <Button
-                    variant={"outlined"}
+                    variant={"contained"}
+                    sx={{backgroundColor: "green"}}
                     onClick={() => {
                         setStep((step) => (step + 1))
                     }}

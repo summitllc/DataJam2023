@@ -1,5 +1,4 @@
-import {Box, Button, IconButton, InputAdornment, LinearProgress, TextField, Typography} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import {Box, Button, LinearProgress, TextField, Typography} from "@mui/material";
 import React, {useState} from "react";
 import axios from "axios";
 
@@ -39,7 +38,7 @@ const AddressInput = (props) => {
             {loading && (
                 <Box style={{textAlign: 'center', display: "block", marginBottom: "15px"}}>
                     <p style={{padding: '10px'}}> Checking Address Format</p>
-                    <LinearProgress/>
+                    <LinearProgress color={"secondary"}/>
                 </Box>
             )}
             <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", width: "90%"}}>
@@ -68,7 +67,9 @@ const AddressInput = (props) => {
                 )}
                 <Box>
                     <Button
-                        variant={"outlined"}
+
+                        variant={"contained"}
+                        sx={{backgroundColor: "green"}}
                         onClick={() => {
                             setStep((step) => (step - 1))
                         }}
@@ -77,7 +78,8 @@ const AddressInput = (props) => {
                         Previous
                     </Button>
                     <Button
-                        variant={"outlined"}
+                        variant={"contained"}
+                        sx={{backgroundColor: "green"}}
                         onClick={async () => {
                             await handleAddressSubmit()
                         }}

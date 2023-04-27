@@ -1,16 +1,14 @@
 "use client"
 import {useEffect, useState} from 'react';
-import {AppBar, Box, Paper, Typography} from '@mui/material';
+import {AppBar, Box, createTheme, Paper, ThemeProvider, Typography} from '@mui/material';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import FacilityCard from './components/FacilityCard'
 import MapCard from "@/app/components/MapCard";
-import AddressConfirmDialog from "@/app/components/AddressConfirmDialog";
 import WhyDialog from "@/app/components/WhyDialog";
-import ConditionDialog from "@/app/components/ConditionDialog";
 import UserGuidance from "@/app/components/UserGuidance"
 import LoadingPopUp from "@/app/components/LoadingPopUp"
 import axios from "axios";
-import {serviceCode, dataDictionary} from "@/app/ServiceCode";
+import {dataDictionary} from "@/app/ServiceCode";
 import Image from 'next/image';
 
 export default function Home() {
@@ -178,112 +176,123 @@ export default function Home() {
 
     const [showLoading, setLoading] = useState(false);
 
+    const theme = createTheme({
+        palette: {
+            secondary: {
+                main: "#00FF00"
+            }
+        }
+    });
+
+
     return (
-        <Paper sx={{backgroundColor: "#dadade"}}>
-            <Box sx={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-                height: '100vh',
-            }}>
-                <Box sx={{flexGrow: 1}}>
-                    <AppBar position="static"
-                            sx={{padding: "10px 15px", height: "6vh", display: 'flex', backgroundColor: "green"}}>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            sx={{
-                                flexGrow: 1,
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
+        <ThemeProvider theme={theme}>
+            <Paper sx={{backgroundColor: "#dadade"}}>
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    height: '100vh',
+                }}>
+                    <Box sx={{flexGrow: 1}}>
+                        <AppBar position="static"
+                                sx={{padding: "10px 15px", height: "6vh", display: 'flex', backgroundColor: "green"}}>
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                sx={{
+                                    flexGrow: 1,
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    fontFamily: 'monospace',
+                                    fontWeight: 700,
+                                    letterSpacing: '.3rem',
+                                    color: 'inherit',
+                                }}
+                            >
+                                <a href="/">Mental Health Treatment in DC - Maryland - Virginia (DMV)</a>
+                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                    <a href="https://github.com/summitllc/DataJam2023" target="_blank">
+                                        <Image src="/githublogo.png" alt="GitHub Logo" width={26} height={26}
+                                               style={{marginTop: '8px', marginRight: '10px'}}/>
+                                    </a>
+                                    <a href="https://www.summitllc.us/" target="_blank">
+                                        <Image src="/summitlogo.png" alt="Summit Logo" width={22} height={22}
+                                               style={{marginTop: '8px'}}/>
+                                    </a>
+                                </div>
+                            </Typography>
+                        </AppBar>
+                        {/*Main Content*/}
+                        <Box sx={{width: "100%", display: "flex"}}>
+                            <Box sx={{width: "60%", height: "95vh"}}>
+                                <MapCard
+                                    setLoading={setLoading}
+                                    setAddressData={setAddressData}
+                                    coordinates={coordinates}
+                                    viewState={viewState}
+                                    setViewState={setViewState}
+                                    setRadius={setRadius}
+                                    setShowConditionDialog={setShowConditionDialog}
+                                    addressData={addressData}
+                                    facilitiesData={facilitiesData}
+                                    currentIndex={currentIndex}
+                                />
+                            </Box>
+                            <Box sx={{width: "40%", height: "95vh"}}>
+                                <FacilityCard
+                                    setSlider={setSlider}
+                                    setShowWhyDialog={setShowWhyDialog}
+                                    facilitiesData={facilitiesData}
+                                    currentIndex={currentIndex}
+                                    setCurrentIndex={setCurrentIndex}
+                                    slider={slider}
+                                />
+                            </Box>
+                        </Box>
+                        {facilitiesData ? <WhyDialog
+                            setShowWhyDialog={setShowWhyDialog}
+                            showWhyDialog={showWhyDialog}
+                            facilitiesData={facilitiesData[currentIndex]}
+                            userScore={userScore}
+                        /> : <></>}
+                        <UserGuidance
+                            open={alreadyAccessedWebsite}
+                            handlePopUpClose={handlePopUpClose}
+                            filterObject={filterObject}
+                            setFilterObject={setFilterObject}
+                            setAddressData={setAddressData}
+                            address={address}
+                            setAddress={setAddress}
+                            setRadius={setRadius}
+                            handleConfirm={handleConfirm}
+                        />
+                        <LoadingPopUp
+                            open={showLoading}
+                            close={() => {
+                                setLoading(false)
                             }}
-                        >
-                            <a href="/">Mental Health Treatment in DC - Maryland - Virginia (DMV)</a>
-                            <div style={{display: 'flex', alignItems: 'center'}}>
-                                <a href="https://github.com/summitllc/DataJam2023" target="_blank">
-                                    <Image src="/githublogo.png" alt="GitHub Logo" width={26} height={26}
-                                           style={{marginTop: '8px', marginRight: '10px'}}/>
-                                </a>
-                                <a href="https://www.summitllc.us/" target="_blank">
-                                    <Image src="/summitlogo.png" alt="Summit Logo" width={22} height={22}
-                                           style={{marginTop: '8px'}}/>
-                                </a>
-                            </div>
-                        </Typography>
-                    </AppBar>
-                    {/*Main Content*/}
-                    <Box sx={{width: "100%", display: "flex"}}>
-                        <Box sx={{width: "60%", height: "95vh"}}>
-                            <MapCard
-                                setLoading={setLoading}
-                                setAddressData={setAddressData}
-                                coordinates={coordinates}
-                                viewState={viewState}
-                                setViewState={setViewState}
-                                setRadius={setRadius}
-                                setShowConditionDialog={setShowConditionDialog}
-                                addressData={addressData}
-                                facilitiesData={facilitiesData}
-                                currentIndex={currentIndex}
-                            />
-                        </Box>
-                        <Box sx={{width: "40%", height: "95vh"}}>
-                            <FacilityCard
-                                setSlider={setSlider}
-                                setShowWhyDialog={setShowWhyDialog}
-                                facilitiesData={facilitiesData}
-                                currentIndex={currentIndex}
-                                setCurrentIndex={setCurrentIndex}
-                                slider={slider}
-                            />
-                        </Box>
+                        />
+                        {/*<AppBar position="absolute" sx={{top: "auto", bottom: -60, padding: "10px 15px", height: "6vh"}}>*/}
+                        {/*    <Typography*/}
+                        {/*        variant="h6"*/}
+                        {/*        noWrap*/}
+                        {/*        sx={{*/}
+                        {/*            mr: 2,*/}
+                        {/*            display: {xs: 'none', md: 'flex'},*/}
+                        {/*            fontFamily: 'monospace',*/}
+                        {/*            fontWeight: 700,*/}
+                        {/*            letterSpacing: '.3rem',*/}
+                        {/*            color: 'inherit'*/}
+                        {/*        }}*/}
+                        {/*    >*/}
+                        {/*        <p>Summit Consulting, LLC (c) 2023 </p>*/}
+                        {/*    </Typography>*/}
+                        {/*</AppBar>*/}
                     </Box>
-                    {facilitiesData ? <WhyDialog
-                        setShowWhyDialog={setShowWhyDialog}
-                        showWhyDialog={showWhyDialog}
-                        facilitiesData={facilitiesData[currentIndex]}
-                        userScore={userScore}
-                    /> : <></>}
-                    <UserGuidance
-                        open={alreadyAccessedWebsite}
-                        handlePopUpClose={handlePopUpClose}
-                        filterObject={filterObject}
-                        setFilterObject={setFilterObject}
-                        setAddressData={setAddressData}
-                        address={address}
-                        setAddress={setAddress}
-                        setRadius={setRadius}
-                        handleConfirm={handleConfirm}
-                    />
-                    <LoadingPopUp
-                        open={showLoading}
-                        close={() => {
-                            setLoading(false)
-                        }}
-                    />
-                    {/*<AppBar position="absolute" sx={{top: "auto", bottom: -60, padding: "10px 15px", height: "6vh"}}>*/}
-                    {/*    <Typography*/}
-                    {/*        variant="h6"*/}
-                    {/*        noWrap*/}
-                    {/*        sx={{*/}
-                    {/*            mr: 2,*/}
-                    {/*            display: {xs: 'none', md: 'flex'},*/}
-                    {/*            fontFamily: 'monospace',*/}
-                    {/*            fontWeight: 700,*/}
-                    {/*            letterSpacing: '.3rem',*/}
-                    {/*            color: 'inherit'*/}
-                    {/*        }}*/}
-                    {/*    >*/}
-                    {/*        <p>Summit Consulting, LLC (c) 2023 </p>*/}
-                    {/*    </Typography>*/}
-                    {/*</AppBar>*/}
                 </Box>
-            </Box>
-        </Paper>
+            </Paper>
+        </ThemeProvider>
     )
 }

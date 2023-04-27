@@ -65,13 +65,14 @@ const PreferenceCard = (props) => {
                 <Typography sx={{fontSize: "0.9rem", textAlign: "center"}}>Least
                     Preferable</Typography>
                 <Slider
-                    sx={{width: "70%"}}
+                    sx={{width: "70%", color: "green"}}
                     marks={marks}
                     defaultValue={3}
                     step={0.5}
                     min={1}
                     max={10}
                     value={slider[name]}
+
                     valueLabelDisplay={"auto"}
                     onChange={(event, value) => {
                         setSlider((prevState) => (

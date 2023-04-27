@@ -25,7 +25,7 @@ const RadiusInput = (props) => {
             <Box sx={{width: "100%", display: "flex", paddingTop: "5px", marginBottom: "10px"}}>
                 <Typography> Distance: {"    "}</Typography>
                 <Slider
-                    sx={{width: "60%"}}
+                    sx={{width: "60%", color: "green"}}
                     marks={marks}
                     defaultValue={5}
                     step={1}
@@ -39,7 +39,8 @@ const RadiusInput = (props) => {
 
             <Box>
                 <Button
-                    variant={"outlined"}
+                    variant={"contained"}
+                    sx={{backgroundColor: "green"}}
                     onClick={() => {
                         setStep((step) => (step - 1))
                     }}
@@ -47,7 +48,8 @@ const RadiusInput = (props) => {
                     Previous
                 </Button>
                 <Button
-                    variant={"outlined"}
+                    variant={"contained"}
+                    sx={{backgroundColor: "green"}}
                     onClick={() => {
                         handleConfirm()
                     }}
