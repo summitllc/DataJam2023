@@ -22,6 +22,7 @@ export default function Home() {
     const [showConditionDialog, setShowConditionDialog] = useState(false);
     const [coordinates, setCoordinates] = useState(null);
     const [facilitiesData, setFacilitiesData] = useState(null)
+    const [userScore, setUserScore] = useState(null)
     const [filterObject, setFilterObject] = useState({
         "Languages": [],
         "Payment Options": [],
@@ -29,6 +30,7 @@ export default function Home() {
         "Special Groups": [],
         "Treatment Approaches": []
     })
+    const [truthScore, setTruthScore] = useState(null)
     const [viewState, setViewState] = useState({
         longitude: -77.03637,
         latitude: 38.89511,
@@ -43,6 +45,11 @@ export default function Home() {
     })
 
     const [currentIndex, setCurrentIndex] = useState(0);
+
+    const [error, setError] = useState({
+        title: "",
+        body: ""
+    })
 
 
     const fetchFacilityData = async (address, long, lat, range, codes) => {
@@ -64,18 +71,20 @@ export default function Home() {
     }
     const generateScore = (userScore, facilityScore) => {
         const bikeScore = (valueOrZero(userScore.bikeScore) + valueOrZero(facilityScore.bikeScore)) / 2
-        console.log(bikeScore)
+
         const transitScore = (valueOrZero(userScore.transitScore) + valueOrZero(facilityScore.transitScore)) / 2
         const walkScore = (valueOrZero(userScore.walkScore) + valueOrZero(facilityScore.walkScore)) / 2
         return {bikeScore, transitScore, walkScore}
     }
 
     const processFacilityData = (userScore, facilityData) => {
-        const {name, coor, walkScore, transitScore, bikeScore, phone, address, website} = facilityData
+        console.log("origin", facilityData)
+        const {name, coor, walkScore, transitScore, bikeScore, phone, address, website, distance} = facilityData
         const scores = generateScore(userScore, {bikeScore, walkScore, transitScore})
+        setTruthScore(scores)
         const total = scores.transitScore + scores.walkScore + scores.bikeScore
         return {
-            name, coor, phone, address, website, scores, total, rawScore: {
+            name, coor, phone, address, website, scores, total, distance, rawScore: {
                 walkScore, transitScore, bikeScore
             }
         }
@@ -101,6 +110,7 @@ export default function Home() {
         if (codes.length === 0) codes = [""]
         const {data} = await fetchFacilityData(address, long, lat, range, codes)
         const userScore = JSON.parse(data.result.userScores)
+        setUserScore(userScore)
         let facilityData = JSON.parse(data.result.facilityData)
         facilityData = facilityData.map((facility) => (
             processFacilityData(userScore, facility))
@@ -128,16 +138,23 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
+
         if (facilitiesData) {
+            if (slider.bikeScore === slider.walkScore === slider.transitScore) {
+                return
+            }
             const totalWeight = slider.bikeScore + slider.walkScore + slider.transitScore
             const bikeWeight = slider.bikeScore / totalWeight;
             const walkWeight = slider.walkScore / totalWeight;
             const transitWeight = slider.transitScore / totalWeight;
             let temp = [...facilitiesData]
             temp = temp.map((facility) => {
-                    const walkScore = walkWeight * facility.scores.walkScore
-                    const transitScore = transitWeight * facility.scores.transitScore
-                    const bikeScore = bikeWeight * facility.scores.bikeScore
+                    const walkScore = walkWeight * truthScore.walkScore
+                    const transitScore = transitWeight * truthScore.transitScore
+                    const bikeScore = bikeWeight * truthScore.bikeScore
+                    const totalSum = (walkScore + transitScore + bikeScore)
+                    const penalty = (facility.distance / radius) * (totalSum / 4)
+                    const total = totalSum - penalty
                     return {
                         ...facility,
                         scores: {
@@ -145,7 +162,7 @@ export default function Home() {
                             bikeScore,
                             transitScore,
                         },
-                        total: walkScore + transitScore + bikeScore
+                        total
                     }
                 }
             )
@@ -166,32 +183,34 @@ export default function Home() {
         <Paper sx={{backgroundColor: "#dadade"}}>
             <Box sx={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minHeight: '100vh'}}>
                 <Box sx={{flexGrow: 1}}>
-                <AppBar position="static" sx={{padding: "10px 15px", height: "6vh", display: 'flex'}}>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        sx={{
-                        flexGrow: 1,
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        letterSpacing: '.3rem',
-                        color: 'inherit',
-                        }}
-                    >
-                        <a href="/">Mental Health Treatment in DC - Maryland - Virginia (DMV)</a>
-                        <div style={{ display: 'flex', alignItems: 'center'}}>
-                            <a href="https://github.com/summitllc/DataJam2023" target="_blank">
-                                <Image src="/githublogo.png" alt="GitHub Logo" width={26} height={26} style={{ marginTop: '8px', marginRight: '10px' }} />
-                            </a>
-                            <a href="https://www.summitllc.us/" target="_blank">
-                                <Image src="/summitlogo.png" alt="Summit Logo" width={22} height={22} style={{ marginTop: '8px' }}/>
-                            </a>
-                        </div>
-                    </Typography>
-                </AppBar>
+                    <AppBar position="static" sx={{padding: "10px 15px", height: "6vh", display: 'flex'}}>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            sx={{
+                                flexGrow: 1,
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                            }}
+                        >
+                            <a href="/">Mental Health Treatment in DC - Maryland - Virginia (DMV)</a>
+                            <div style={{display: 'flex', alignItems: 'center'}}>
+                                <a href="https://github.com/summitllc/DataJam2023" target="_blank">
+                                    <Image src="/githublogo.png" alt="GitHub Logo" width={26} height={26}
+                                           style={{marginTop: '8px', marginRight: '10px'}}/>
+                                </a>
+                                <a href="https://www.summitllc.us/" target="_blank">
+                                    <Image src="/summitlogo.png" alt="Summit Logo" width={22} height={22}
+                                           style={{marginTop: '8px'}}/>
+                                </a>
+                            </div>
+                        </Typography>
+                    </AppBar>
                     {/*Main Content*/}
                     <Box sx={{width: "100%", display: "flex"}}>
                         <Box sx={{width: "50%", height: "95vh"}}>
@@ -232,6 +251,7 @@ export default function Home() {
                         setShowWhyDialog={setShowWhyDialog}
                         showWhyDialog={showWhyDialog}
                         facilitiesData={facilitiesData[currentIndex]}
+                        userScore={userScore}
                     /> : <></>}
 
                     <ConditionDialog

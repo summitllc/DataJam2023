@@ -7,6 +7,7 @@ import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
 import Map, {Marker, NavigationControl, Popup} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Button from "@mui/material/Button/Button";
+import Pin from "@/app/components/Icon";
 
 const AddressInputCard = (props) => {
     const {
