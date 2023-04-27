@@ -22,6 +22,8 @@ const AddressInputCard = (props) => {
     const [address, setAddress] = useState("");
     const [error, setError] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
+    const [currentFacilityInfo, setCurrentFacilityInfo] = useState(null);
+    const [facilityCoorList, setFacilityCoorList] = useState([])
     const mapRef = useRef();
 
     const marks = [
@@ -84,6 +86,12 @@ const AddressInputCard = (props) => {
         if (index === currentIndex) return "green"
         return "red"
     }
+    useEffect(() => {
+        if (facilitiesData) {
+            const coorList = facilitiesData.map((facility) => facility.coor)
+            setFacilityCoorList(coorList)
+        }
+    }, [facilitiesData])
 
     useEffect(() => {
         if (coordinates !== null && facilitiesData !== null) {
@@ -186,6 +194,7 @@ const AddressInputCard = (props) => {
                 {showPopup && coordinates ?
                     <Popup
                         anchor="top"
+                        maxWidth={"400px"}
                         longitude={Number(coordinates.x)}
                         latitude={Number(coordinates.y)}
                         onClose={() => setShowPopup(false)}
@@ -197,13 +206,41 @@ const AddressInputCard = (props) => {
                     <></>
                 }
 
-                {facilitiesData?.map((facility) => facility.coor).map((coor, index) => {
+                {facilityCoorList.map((coor, index) => {
                     return (
-                        <Marker key={coor} longitude={coor[0]} latitude={coor[1]} anchor="bottom">
+                        <Marker key={index} longitude={coor[0]} latitude={coor[1]} anchor="bottom"
+                                onClick={(event) => {
+                                    setCurrentFacilityInfo((prevState) => {
+                                        return facilitiesData[index]
+                                    })
+                                    event.originalEvent.stopPropagation()
+                                }}>
                             <PersonPinCircleIcon sx={{color: markerColor(index)}}/>
                         </Marker>
                     )
                 })}
+                {currentFacilityInfo &&
+                    <Popup
+                        anchor="top"
+                        longitude={currentFacilityInfo.coor[0]}
+                        maxWidth={"400px"}
+                        latitude={currentFacilityInfo.coor[1]}
+                        onClose={() => setCurrentFacilityInfo(null)}
+                    >
+                        <Box>
+                            <Typography textAlign={"center"} sx={{marginBottom: "10px"}}>
+                                {currentFacilityInfo.name}
+                            </Typography>
+                            <Typography textAlign={"center"} sx={{marginBottom: "10px"}}>
+                                {currentFacilityInfo.address}
+                            </Typography>
+                            <Typography textAlign={"center"}>
+                                {currentFacilityInfo.phone}
+                            </Typography>
+                        </Box>
+                    </Popup>
+                }
+
 
             </Map>
         </Paper>
