@@ -1,28 +1,26 @@
 "use client"
 import {useEffect, useState} from 'react';
-import {AppBar, Box, Paper, Typography} from '@mui/material';
+import {AppBar, Box, createTheme, Paper, ThemeProvider, Typography} from '@mui/material';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import FacilityCard from './components/FacilityCard'
-import AddressInputCard from "@/app/components/AddressInputCard";
-import AddressConfirmDialog from "@/app/components/AddressConfirmDialog";
+import MapCard from "@/app/components/MapCard";
 import WhyDialog from "@/app/components/WhyDialog";
-import ConditionDialog from "@/app/components/ConditionDialog";
-import IntroPopUp from "@/app/components/IntroPopUp"
+import UserGuidance from "@/app/components/UserGuidance"
 import LoadingPopUp from "@/app/components/LoadingPopUp"
 import axios from "axios";
-import {serviceCode, dataDictionary} from "@/app/ServiceCode";
+import {dataDictionary} from "@/app/ServiceCode";
 import Image from 'next/image';
 
 export default function Home() {
 
 
     const [addressData, setAddressData] = useState(null);
-    const [showConfirmAddress, setShowConfirmAddress] = useState(false);
+    const [address, setAddress] = useState("");
     const [showWhyDialog, setShowWhyDialog] = useState(false);
-    const [showConditionDialog, setShowConditionDialog] = useState(false);
     const [coordinates, setCoordinates] = useState(null);
     const [facilitiesData, setFacilitiesData] = useState(null)
     const [userScore, setUserScore] = useState(null)
+    const [step, setStep] = useState(0)
     const [filterObject, setFilterObject] = useState({
         "Languages": [],
         "Payment Options": [],
@@ -39,9 +37,9 @@ export default function Home() {
     const [radius, setRadius] = useState(5);
 
     const [slider, setSlider] = useState({
-        walkScore: 1,
-        bikeScore: 1,
-        transitScore: 1
+        walkScore: 5.5,
+        bikeScore: 5.5,
+        transitScore: 5.5
     })
 
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -91,9 +89,9 @@ export default function Home() {
     }
 
     const handleConfirm = async () => {
+        setAlreadyAccessedWebsite(false)
         setLoading(true);
         const location = addressData.result.addressMatches[0].coordinates
-        setShowConfirmAddress(false);
         setCoordinates(location)
         const address = addressData.result.addressMatches[0].matchedAddress
         const range = radius
@@ -173,121 +171,127 @@ export default function Home() {
     }, [slider])
 
     const handlePopUpClose = () => {
-        localStorage.setItem('alreadyAccessedWebsite', true);
-        setAlreadyAccessedWebsite(true);
+        setAlreadyAccessedWebsite(false)
     };
 
     const [showLoading, setLoading] = useState(false);
 
+    const theme = createTheme({
+        palette: {
+            secondary: {
+                main: "#00FF00"
+            }
+        }
+    });
+
+
     return (
-        <Paper sx={{backgroundColor: "#dadade"}}>
-            <Box sx={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minHeight: '100vh'}}>
-                <Box sx={{flexGrow: 1}}>
-                    <AppBar position="static" sx={{padding: "10px 15px", height: "6vh", display: 'flex'}}>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            sx={{
-                                flexGrow: 1,
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                            }}
-                        >
-                            <a href="/">Mental Health Treatment in DC - Maryland - Virginia (DMV)</a>
-                            <div style={{display: 'flex', alignItems: 'center'}}>
-                                <a href="https://github.com/summitllc/DataJam2023" target="_blank">
-                                    <Image src="/githublogo.png" alt="GitHub Logo" width={26} height={26}
-                                           style={{marginTop: '8px', marginRight: '10px'}}/>
-                                </a>
-                                <a href="https://www.summitllc.us/" target="_blank">
-                                    <Image src="/summitlogo.png" alt="Summit Logo" width={22} height={22}
-                                           style={{marginTop: '8px'}}/>
-                                </a>
-                            </div>
-                        </Typography>
-                    </AppBar>
-                    {/*Main Content*/}
-                    <Box sx={{width: "100%", display: "flex"}}>
-                        <Box sx={{width: "50%", height: "95vh"}}>
-                            <AddressInputCard
-                                setLoading={setLoading}
-                                setAddressData={setAddressData}
-                                setShowConfirmAddress={setShowConfirmAddress}
-                                coordinates={coordinates}
-                                viewState={viewState}
-                                setViewState={setViewState}
-                                setRadius={setRadius}
-                                setShowConditionDialog={setShowConditionDialog}
-                                addressData={addressData}
-                                facilitiesData={facilitiesData}
-                                currentIndex={currentIndex}
-                            />
+        <ThemeProvider theme={theme}>
+            <Paper sx={{backgroundColor: "#dadade"}}>
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    height: '100vh',
+                }}>
+                    <Box sx={{flexGrow: 1}}>
+                        <AppBar position="static"
+                                sx={{padding: "10px 15px", height: "6vh", display: 'flex', backgroundColor: "green"}}>
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                sx={{
+                                    flexGrow: 1,
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    fontFamily: 'monospace',
+                                    fontWeight: 700,
+                                    letterSpacing: '.3rem',
+                                    color: 'inherit',
+                                }}
+                            >
+                                <a href="/">Mental Health Treatment in DC - Maryland - Virginia (DMV)</a>
+                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                    <a href="https://github.com/summitllc/DataJam2023" target="_blank">
+                                        <Image src="/githublogo.png" alt="GitHub Logo" width={26} height={26}
+                                               style={{marginTop: '8px', marginRight: '10px'}}/>
+                                    </a>
+                                    <a href="https://www.summitllc.us/" target="_blank">
+                                        <Image src="/summitlogo.png" alt="Summit Logo" width={22} height={22}
+                                               style={{marginTop: '8px'}}/>
+                                    </a>
+                                </div>
+                            </Typography>
+                        </AppBar>
+                        {/*Main Content*/}
+                        <Box sx={{width: "100%", display: "flex"}}>
+                            <Box sx={{width: "60%", height: "95vh"}}>
+                                <MapCard
+                                    coordinates={coordinates}
+                                    viewState={viewState}
+                                    setViewState={setViewState}
+                                    facilitiesData={facilitiesData}
+                                    currentIndex={currentIndex}
+                                    setShowGuidance={setAlreadyAccessedWebsite}
+                                    setStep={setStep}
+                                />
+                            </Box>
+                            <Box sx={{width: "40%", height: "95vh"}}>
+                                <FacilityCard
+                                    setSlider={setSlider}
+                                    setShowWhyDialog={setShowWhyDialog}
+                                    facilitiesData={facilitiesData}
+                                    currentIndex={currentIndex}
+                                    setCurrentIndex={setCurrentIndex}
+                                    slider={slider}
+                                />
+                            </Box>
                         </Box>
-                        <Box sx={{width: "50%", height: "95vh"}}>
-                            <FacilityCard
-                                setSlider={setSlider}
-                                setShowWhyDialog={setShowWhyDialog}
-                                facilitiesData={facilitiesData}
-                                currentIndex={currentIndex}
-                                setCurrentIndex={setCurrentIndex}
-                                slider={slider}
-                            />
-                        </Box>
-                    </Box>
-
-                    {(addressData) &&
-                        <AddressConfirmDialog
+                        {facilitiesData ? <WhyDialog
+                            setShowWhyDialog={setShowWhyDialog}
+                            showWhyDialog={showWhyDialog}
+                            facilitiesData={facilitiesData[currentIndex]}
+                            userScore={userScore}
+                        /> : <></>}
+                        <UserGuidance
+                            open={alreadyAccessedWebsite}
+                            handlePopUpClose={handlePopUpClose}
+                            filterObject={filterObject}
+                            setFilterObject={setFilterObject}
+                            setAddressData={setAddressData}
+                            address={address}
+                            setAddress={setAddress}
+                            setRadius={setRadius}
                             handleConfirm={handleConfirm}
-                            showConfirmAddress={showConfirmAddress}
-                            addressData={addressData}
+                            step={step}
+                            setStep={setStep}
                         />
-                    }
-                    {facilitiesData ? <WhyDialog
-                        setShowWhyDialog={setShowWhyDialog}
-                        showWhyDialog={showWhyDialog}
-                        facilitiesData={facilitiesData[currentIndex]}
-                        userScore={userScore}
-                    /> : <></>}
-
-                    <ConditionDialog
-                        setShowConditionDialog={setShowConditionDialog}
-                        showConditionDialog={showConditionDialog}
-                        setFilterObject={setFilterObject}
-                        filterObject={filterObject}
-                    />
-                    <IntroPopUp
-                        open={!alreadyAccessedWebsite}
-                        handlePopUpClose={handlePopUpClose}
-                    />
-                    <LoadingPopUp
-                        open={showLoading}
-                        close={() => {
-                            setLoading(false)
-                        }}
-                    />
+                        <LoadingPopUp
+                            open={showLoading}
+                            close={() => {
+                                setLoading(false)
+                            }}
+                        />
+                        {/*<AppBar position="absolute" sx={{top: "auto", bottom: -60, padding: "10px 15px", height: "6vh"}}>*/}
+                        {/*    <Typography*/}
+                        {/*        variant="h6"*/}
+                        {/*        noWrap*/}
+                        {/*        sx={{*/}
+                        {/*            mr: 2,*/}
+                        {/*            display: {xs: 'none', md: 'flex'},*/}
+                        {/*            fontFamily: 'monospace',*/}
+                        {/*            fontWeight: 700,*/}
+                        {/*            letterSpacing: '.3rem',*/}
+                        {/*            color: 'inherit'*/}
+                        {/*        }}*/}
+                        {/*    >*/}
+                        {/*        <p>Summit Consulting, LLC (c) 2023 </p>*/}
+                        {/*    </Typography>*/}
+                        {/*</AppBar>*/}
+                    </Box>
                 </Box>
-                <AppBar position="absolute" sx={{top: "auto", bottom: -60, padding: "10px 15px", height: "6vh"}}>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        sx={{
-                            mr: 2,
-                            display: {xs: 'none', md: 'flex'},
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit'
-                        }}
-                    >
-                        <p>Summit Consulting, LLC (c) 2023 </p>
-                    </Typography>
-                </AppBar>
-            </Box>
-        </Paper>
+            </Paper>
+        </ThemeProvider>
     )
 }
