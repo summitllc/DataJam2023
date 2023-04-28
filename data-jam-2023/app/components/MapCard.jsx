@@ -109,7 +109,7 @@ const MapCard = (props) => {
                         event.originalEvent.stopPropagation()
 
                     }}>
-                        <PersonPinCircleIcon sx={{color: "blue"}}/>
+                        <PersonPinCircleIcon fontSize={"large"} sx={{color: "blue"}}/>
                     </Marker>
                 }
                 {showPopup && coordinates ?
@@ -136,7 +136,7 @@ const MapCard = (props) => {
                                     })
                                     event.originalEvent.stopPropagation()
                                 }}>
-                            <PersonPinCircleIcon sx={{color: markerColor(index)}}/>
+                            <PersonPinCircleIcon fontSize={"large"} sx={{color: markerColor(index)}}/>
                         </Marker>
                     )
                 })}

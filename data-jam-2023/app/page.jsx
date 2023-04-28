@@ -105,6 +105,7 @@ export default function Home() {
             })
             codes = [...codes, ...temp]
         })
+        console.log("codes", codes)
         if (codes.length === 0) codes = [""]
         const {data} = await fetchFacilityData(address, long, lat, range, codes)
         const userScore = JSON.parse(data.result.userScores)
@@ -116,16 +117,10 @@ export default function Home() {
         facilityData.sort((a, b) => b.total - a.total)
         setFacilitiesData(facilityData)
         setSlider({
-            walkScore: 1,
-            bikeScore: 1,
-            transitScore: 1
+            walkScore: 5.5,
+            bikeScore: 5.5,
+            transitScore: 5.5
         })
-
-        // setViewState({
-        //     longtitude: location.x,
-        //     latitude: location.y,
-        //     zoom: 13
-        // })
         setLoading(false);
     }
 

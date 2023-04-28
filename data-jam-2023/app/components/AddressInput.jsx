@@ -21,7 +21,14 @@ const AddressInput = (props) => {
     const handleAddressSubmit = async () => {
         setLoading(true);
         setBadAddress(false)
-        const userAddressData = await fetchAddressData();
+        let userAddressData = null;
+        try {
+            userAddressData = await fetchAddressData();
+        } catch (e) {
+            setBadAddress(true);
+            setLoading(false)
+            return
+        }
         if (userAddressData.data.result.addressMatches.length === 0) {
             setBadAddress(true);
             setLoading(false)
