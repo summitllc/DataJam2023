@@ -18,7 +18,13 @@ To use our website, start by entering your address within the DC, Maryland, and 
 - Python
 
 ## Public Data Sources Utilized
-Placeholder.
+We used two publically available datasets used in this application. 
+- Mental heath treatment facilities were collected form [FindTreatment.gov](https://www.findtreatment.gov), then filtered down to include only facilities from Virginia, Maryland, and the District of Columbia.
+- The user's longitude and lattitude coordinates are retrieved from the [US Census Geocoding API](https://geocoding.geo.census.gov/geocoder/).
+
+## Additional Resources Utilized
+Part of our scoring algorithm relies on metrics provided by [Walk Score](https://www.walkscore.com/). We utilized MapBox to provide mapping visuals. 
+
 
 ## Summit Team Contributors
 - Tyler Whitaker - Data Scientist
