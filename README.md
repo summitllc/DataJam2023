@@ -9,10 +9,11 @@ MIND is a website developed by Summit Consulting, LLC's data science and softwar
 To use our website, start by entering your address within the DC, Maryland, and Virginia region. You can then apply filters such as preferred languages, payment options, and other criteria. Next, use the sliders to indicate your preferred mode of transportation, whether it be walking, taking the metro, or biking. Based on these inputs, our website will populate a list of recommended mental health facilities ranked by proximity and your preferred mode of transportation. You can experiment with the sliders to observe how the rankings change based on your transportation preferences. Finally, a map with pins will display each facility's location.
 
 ## Architecture
-Placeholder:
+![Architecture Diagram of MIND web application](img/HealthEquityDataJam2023.png)
 - NextJS 13.2.4
 - React 18.2.0
 - AWS EC2
+- AWS API Gateway
 - AWS Lambda
 - Python
 
