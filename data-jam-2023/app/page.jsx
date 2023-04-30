@@ -1,6 +1,6 @@
 "use client"
 import {useEffect, useState} from 'react';
-import {AppBar, Box, createTheme, Paper, ThemeProvider, Typography} from '@mui/material';
+import {AppBar, Box, Container, createTheme, Paper, ThemeProvider, Typography} from '@mui/material';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import FacilityCard from './components/FacilityCard'
 import MapCard from "@/app/components/MapCard";
@@ -10,6 +10,7 @@ import LoadingPopUp from "@/app/components/LoadingPopUp"
 import axios from "axios";
 import {dataDictionary} from "@/app/ServiceCode";
 import Image from 'next/image';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 export default function Home() {
 
@@ -79,7 +80,6 @@ export default function Home() {
         console.log("origin", facilityData)
         const {name, coor, walkScore, transitScore, bikeScore, phone, address, website, distance} = facilityData
         const scores = generateScore(userScore, {bikeScore, walkScore, transitScore})
-        setTruthScore(scores)
         const total = scores.transitScore + scores.walkScore + scores.bikeScore
         return {
             name, coor, phone, address, website, scores, total, distance, rawScore: {
@@ -116,6 +116,7 @@ export default function Home() {
         )
         facilityData.sort((a, b) => b.total - a.total)
         setFacilitiesData(facilityData)
+        setTruthScore(facilityData)
         setSlider({
             walkScore: 5.5,
             bikeScore: 5.5,
@@ -141,10 +142,15 @@ export default function Home() {
             const walkWeight = slider.walkScore / totalWeight;
             const transitWeight = slider.transitScore / totalWeight;
             let temp = [...facilitiesData]
-            temp = temp.map((facility) => {
-                    const walkScore = walkWeight * truthScore.walkScore
-                    const transitScore = transitWeight * truthScore.transitScore
-                    const bikeScore = bikeWeight * truthScore.bikeScore
+            let penaltyWeight = 4
+            // if (walkWeight > transitWeight && walkWeight > bikeWeight) penaltyWeight = 2
+            temp = temp.map((facility, index) => {
+                    console.log("#########################################################")
+                    console.log(facility.name)
+                    console.log("Average Score", facility.scores)
+                    const walkScore = walkWeight * truthScore[index].scores.walkScore
+                    const transitScore = transitWeight * truthScore[index].scores.transitScore
+                    const bikeScore = bikeWeight * truthScore[index].scores.bikeScore
                     const totalSum = (walkScore + transitScore + bikeScore)
                     const penalty = (facility.distance / radius) * (totalSum / 4)
                     const total = totalSum - penalty
@@ -191,33 +197,49 @@ export default function Home() {
                 }}>
                     <Box sx={{flexGrow: 1}}>
                         <AppBar position="static"
-                                sx={{padding: "10px 15px", height: "6vh", display: 'flex', backgroundColor: "green"}}>
-                            <Typography
-                                variant="h6"
-                                noWrap
                                 sx={{
-                                    flexGrow: 1,
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    fontFamily: 'monospace',
-                                    fontWeight: 700,
-                                    letterSpacing: '.3rem',
-                                    color: 'inherit',
-                                }}
-                            >
-                                <a href="/">Mental Health Treatment in DC - Maryland - Virginia (DMV)</a>
-                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                    backgroundColor: "green",
+                                    minHeight: "6vh",
+                                    paddingTop: "1.5vh"
+                                }}>
+                            <Container sx={{
+                                minWidth: "100%",
+                                display: "flex",
+                                justifyContent: "space-between"
+                            }}>
+                                <Box sx={{width: "60%"}}>
+                                    <Typography
+                                        variant="h6"
+                                        noWrap
+                                        sx={{
+                                            flexGrow: 1,
+                                            display: 'flex',
+                                            fontFamily: 'monospace',
+                                            fontWeight: 700,
+                                            letterSpacing: '.3rem',
+                                            color: 'inherit',
+                                        }}
+                                    >
+                                        <a href="/">Mental Health in DC - Maryland - Virginia (MIND)</a>
+                                    </Typography>
+                                </Box>
+
+                                <Box sx={{
+                                    width: "30%",
+                                    display: "flex",
+                                    justifyContent: "flex-end",
+                                    alignItems: "center"
+                                }}>
                                     <a href="https://github.com/summitllc/DataJam2023" target="_blank">
-                                        <Image src="/githublogo.png" alt="GitHub Logo" width={26} height={26}
-                                               style={{marginTop: '8px', marginRight: '10px'}}/>
+                                        <GitHubIcon fontSize={"large"} sx={{marginRight: "20px", color: "white"}}/>
                                     </a>
                                     <a href="https://www.summitllc.us/" target="_blank">
-                                        <Image src="/summitlogo.png" alt="Summit Logo" width={22} height={22}
-                                               style={{marginTop: '8px'}}/>
+                                        <Image src="/summitlogo.png" alt="Summit Logo" width={30} height={30}
+                                               style={{marginRight: "10px"}}/>
                                     </a>
-                                </div>
-                            </Typography>
+                                </Box>
+                            </Container>
+
                         </AppBar>
                         {/*Main Content*/}
                         <Box sx={{width: "100%", display: "flex"}}>
@@ -230,6 +252,7 @@ export default function Home() {
                                     currentIndex={currentIndex}
                                     setShowGuidance={setAlreadyAccessedWebsite}
                                     setStep={setStep}
+                                    addressData={addressData}
                                 />
                             </Box>
                             <Box sx={{width: "40%", height: "95vh"}}>
@@ -268,22 +291,6 @@ export default function Home() {
                                 setLoading(false)
                             }}
                         />
-                        {/*<AppBar position="absolute" sx={{top: "auto", bottom: -60, padding: "10px 15px", height: "6vh"}}>*/}
-                        {/*    <Typography*/}
-                        {/*        variant="h6"*/}
-                        {/*        noWrap*/}
-                        {/*        sx={{*/}
-                        {/*            mr: 2,*/}
-                        {/*            display: {xs: 'none', md: 'flex'},*/}
-                        {/*            fontFamily: 'monospace',*/}
-                        {/*            fontWeight: 700,*/}
-                        {/*            letterSpacing: '.3rem',*/}
-                        {/*            color: 'inherit'*/}
-                        {/*        }}*/}
-                        {/*    >*/}
-                        {/*        <p>Summit Consulting, LLC (c) 2023 </p>*/}
-                        {/*    </Typography>*/}
-                        {/*</AppBar>*/}
                     </Box>
                 </Box>
             </Paper>
