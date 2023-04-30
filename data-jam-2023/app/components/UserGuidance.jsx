@@ -53,11 +53,17 @@ const UserGuidance = (props) => {
             }}>
                 <Typography variant="h6" component="h2">
                     <div style={{textAlign: 'center'}}>
-                        <h1>Example Header Title</h1>
-                        <h2>How this website works:</h2>
-                        <p style={{margin: '10px'}}>Set X.</p>
-                        <p style={{margin: '10px'}}>Then see Y.</p>
-                        <p style={{margin: '10px'}}>Finally see the results.</p>
+                        <h1>Welcome to MIND</h1>
+                        <p>
+                            Our easily navigable application gives personalized transit scores and rankings of mental
+                            health
+                            facilities in the District of Columbia, Maryland, and Virginia metropolitan area by focusing
+                            on
+                            the user’s transit preferences. Our application allows users to not only identify and locate
+                            facilities that fulfill their medical and financial requirements, but also considers their
+                            transportation needs.
+                        </p>
+
                         <Button style={{margin: '20px', backgroundColor: "green"}} variant="contained"
                                 onClick={() => {
                                     setStep(1)

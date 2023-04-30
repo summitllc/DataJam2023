@@ -21,6 +21,7 @@ const MapCard = (props) => {
     const [showPopup, setShowPopup] = useState(false);
     const [currentFacilityInfo, setCurrentFacilityInfo] = useState(null);
     const [facilityCoorList, setFacilityCoorList] = useState([])
+    const [cursor, setCursor] = useState("auto")
     const mapRef = useRef();
 
     const findBound = (coordinates) => {
@@ -84,7 +85,8 @@ const MapCard = (props) => {
             height: "98%",
             margin: "1% 1%"
         }}>
-            <Button sx={{backgroundColor: "green", width: "30%", alignSelf: "center"}} variant={"contained"}
+            <Button sx={{backgroundColor: "green", width: "25%", alignSelf: "center", marginBottom: "10px"}}
+                    variant={"contained"}
                     onClick={() => {
                         setStep(1)
                         setShowGuidance(true)
@@ -107,9 +109,19 @@ const MapCard = (props) => {
                             !prevState
                         ))
                         event.originalEvent.stopPropagation()
-
-                    }}>
-                        <PersonPinCircleIcon sx={{color: "blue"}}/>
+                    }}
+                    >
+                        <PersonPinCircleIcon
+                            fontSize={"large"}
+                            sx={{color: "blue"}}
+                            onMouseEnter={() => {
+                                setCursor("pointer")
+                            }}
+                            onMouseLeave={() => {
+                                setCursor("auto")
+                            }}
+                            cursor={cursor}
+                        />
                     </Marker>
                 }
                 {showPopup && coordinates ?
@@ -136,7 +148,17 @@ const MapCard = (props) => {
                                     })
                                     event.originalEvent.stopPropagation()
                                 }}>
-                            <PersonPinCircleIcon sx={{color: markerColor(index)}}/>
+                            <PersonPinCircleIcon
+                                fontSize={"large"}
+                                sx={{color: markerColor(index)}}
+                                onMouseEnter={() => {
+                                    setCursor("pointer")
+                                }}
+                                onMouseLeave={() => {
+                                    setCursor("auto")
+                                }}
+                                cursor={cursor}
+                            />
                         </Marker>
                     )
                 })}

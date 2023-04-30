@@ -39,7 +39,7 @@ const RadiusInput = (props) => {
             <Box>
                 <Button
                     variant={"contained"}
-                    sx={{backgroundColor: "green"}}
+                    sx={{backgroundColor: "green", marginRight: "30px"}}
                     onClick={() => {
                         setStep((step) => (step - 1))
                     }}
@@ -53,7 +53,7 @@ const RadiusInput = (props) => {
                         handleConfirm()
                     }}
                 >
-                    Next
+                    Search
                 </Button>
             </Box>
         </Box>)

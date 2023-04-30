@@ -21,7 +21,14 @@ const AddressInput = (props) => {
     const handleAddressSubmit = async () => {
         setLoading(true);
         setBadAddress(false)
-        const userAddressData = await fetchAddressData();
+        let userAddressData = null;
+        try {
+            userAddressData = await fetchAddressData();
+        } catch (e) {
+            setBadAddress(true);
+            setLoading(false)
+            return
+        }
         if (userAddressData.data.result.addressMatches.length === 0) {
             setBadAddress(true);
             setLoading(false)
@@ -62,14 +69,14 @@ const AddressInput = (props) => {
                     <Box textAlign={"center"} sx={{marginBottom: "10px"}}>
                         <Typography>Address can not be found</Typography>
                         <Typography>Make sure you entered a full address</Typography>
-                        <Typography>Example: "777 6th St, Washington DC, VA, 20001"</Typography>
+                        <Typography>Example: "777 6th St, Washington, DC, 20001"</Typography>
                     </Box>
                 )}
                 <Box>
                     <Button
 
                         variant={"contained"}
-                        sx={{backgroundColor: "green"}}
+                        sx={{backgroundColor: "green", marginRight: "30px"}}
                         onClick={() => {
                             setStep((step) => (step - 1))
                         }}
