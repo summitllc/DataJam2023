@@ -11,6 +11,7 @@ import axios from "axios";
 import {dataDictionary} from "@/app/ServiceCode";
 import Image from 'next/image';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import ErrorDialog from "@/app/components/ErrorDialog";
 
 export default function Home() {
 
@@ -45,10 +46,7 @@ export default function Home() {
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const [error, setError] = useState({
-        title: "",
-        body: ""
-    })
+    const [showError, setShowError]= useState(false)
 
 
     const fetchFacilityData = async (address, long, lat, range, codes) => {
@@ -77,7 +75,6 @@ export default function Home() {
     }
 
     const processFacilityData = (userScore, facilityData) => {
-        console.log("origin", facilityData)
         const {name, coor, walkScore, transitScore, bikeScore, phone, address, website, distance} = facilityData
         const scores = generateScore(userScore, {bikeScore, walkScore, transitScore})
         const total = scores.transitScore + scores.walkScore + scores.bikeScore
@@ -105,9 +102,19 @@ export default function Home() {
             })
             codes = [...codes, ...temp]
         })
-        console.log("codes", codes)
         if (codes.length === 0) codes = [""]
-        const {data} = await fetchFacilityData(address, long, lat, range, codes)
+        let result = null
+        try{
+            result = await fetchFacilityData(address, long, lat, range, codes)
+        }
+        catch (error){
+            setLoading(false)
+            setShowError(true)
+            return
+
+        }
+
+        const {data}= result
         const userScore = JSON.parse(data.result.userScores)
         setUserScore(userScore)
         let facilityData = JSON.parse(data.result.facilityData)
@@ -126,10 +133,6 @@ export default function Home() {
     }
 
     const [alreadyAccessedWebsite, setAlreadyAccessedWebsite] = useState(true);
-    useEffect(() => {
-        const previouslyAccessed = localStorage.getItem('alreadyAccessedWebsite');
-        setAlreadyAccessedWebsite(previouslyAccessed);
-    }, []);
 
     useEffect(() => {
 
@@ -142,12 +145,7 @@ export default function Home() {
             const walkWeight = slider.walkScore / totalWeight;
             const transitWeight = slider.transitScore / totalWeight;
             let temp = [...facilitiesData]
-            let penaltyWeight = 4
-            // if (walkWeight > transitWeight && walkWeight > bikeWeight) penaltyWeight = 2
             temp = temp.map((facility, index) => {
-                    console.log("#########################################################")
-                    console.log(facility.name)
-                    console.log("Average Score", facility.scores)
                     const walkScore = walkWeight * truthScore[index].scores.walkScore
                     const transitScore = transitWeight * truthScore[index].scores.transitScore
                     const bikeScore = bikeWeight * truthScore[index].scores.bikeScore
@@ -290,6 +288,20 @@ export default function Home() {
                             close={() => {
                                 setLoading(false)
                             }}
+                        />
+                        <ErrorDialog
+                            title={"No Facility"}
+                            body={
+                            <Box>
+                                <Typography>
+                                    There is no facility that matches your search.
+                                </Typography>
+                            </Box>
+                            }
+                            setShowErrorDialog={setShowError}
+                            showErrorDialog={showError}
+                            setShowGuidance={setAlreadyAccessedWebsite}
+                            setStep={setStep}
                         />
                     </Box>
                 </Box>

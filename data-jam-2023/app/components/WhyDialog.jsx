@@ -8,10 +8,9 @@ import {
     Tab,
     Tabs,
     Typography,
-    useEventCallback
 } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 const TabPanel = (props) => {
     const {children, value, index, ...other} = props;
@@ -44,13 +43,6 @@ const WhyDialog = (props) => {
     const onClose = () => {
         setShowWhyDialog(false)
     }
-
-    const formatPersonalScore = (score) => {
-        return Math.floor(score * 10)
-    }
-    useEffect(() => {
-        console.log("facilities data", facilitiesData)
-    }, [facilitiesData])
     return (
         <Dialog onClose={onClose} open={showWhyDialog} maxWidth={"md"}>
             <DialogTitle>

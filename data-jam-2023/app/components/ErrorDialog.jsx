@@ -1,11 +1,13 @@
-import {useEffect, useState} from "react";
-import {Box, Button, Dialog, DialogContent, DialogTitle, IconButton, Link, Tab, Tabs, Typography} from "@mui/material";
+import {Button, Dialog, DialogContent, DialogTitle} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 const ErrorDialog = (props) => {
-    const {title, body, setShowErrorDialog, showErrorDialog} = props
+    const {title, body, setShowErrorDialog, showErrorDialog, setStep, setShowGuidance} = props
 
-    const onClose = () => {
+    const onClose = (event, reason) => {
+        if (reason === "backdropClick") return
+        setStep(1)
+        setShowGuidance(true)
         setShowErrorDialog(false)
     }
 
@@ -13,7 +15,7 @@ const ErrorDialog = (props) => {
         <Dialog onClose={onClose} open={showErrorDialog} maxWidth={"md"}>
             <DialogTitle>
                 {title}
-                <IconButton
+                <IconButto
                     aria-label="close"
                     onClick={onClose}
                     sx={{
@@ -24,11 +26,12 @@ const ErrorDialog = (props) => {
                     }}
                 >
                     <CloseIcon/>
-                </IconButton>
+                </IconButto>
             </DialogTitle>
-            <DialogContent>
-                <Typography>{body}</Typography>
-                <Button variant={"outline"}>Dismiss</Button>
+            <DialogContent sx={{display:"flex", alignItems:"center", flexDirection:"column"}}>
+                {body}
+                <Button variant={"contained"}
+                        sx={{backgroundColor: "green", marginTop:"15px", width:"50%"}} onClick={onClose}>Modify Search</Button>
             </DialogContent>
         </Dialog>
     )
