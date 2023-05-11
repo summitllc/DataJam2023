@@ -1,4 +1,4 @@
-import {Button, Dialog, DialogContent, DialogTitle} from "@mui/material";
+import {Button, Dialog, DialogContent, DialogTitle, IconButton} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 const ErrorDialog = (props) => {
@@ -15,7 +15,7 @@ const ErrorDialog = (props) => {
         <Dialog onClose={onClose} open={showErrorDialog} maxWidth={"md"}>
             <DialogTitle>
                 {title}
-                <IconButto
+                <IconButton
                     aria-label="close"
                     onClick={onClose}
                     sx={{
@@ -26,7 +26,7 @@ const ErrorDialog = (props) => {
                     }}
                 >
                     <CloseIcon/>
-                </IconButto>
+                </IconButton>
             </DialogTitle>
             <DialogContent sx={{display:"flex", alignItems:"center", flexDirection:"column"}}>
                 {body}
