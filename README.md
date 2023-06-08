@@ -1,5 +1,4 @@
 # Mental Health in DC - Maryland - Virgina (MIND)
-*I think it's always nice to have a gif or image here of the app. Then the link to app below.* <br>
 
 [Link to Mental Health in DC - Maryland - Virgina (MIND)](https://mind.summitllc.us/)
 ## Description
